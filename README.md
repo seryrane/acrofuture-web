@@ -12,6 +12,7 @@
 | [docs/개편_기획.md](docs/개편_기획.md) | **정본.** 정보구조·화면 순서·인터랙션 적용 기준·안 하기로 한 것 |
 | [docs/현황_진단.md](docs/현황_진단.md) | 지금 사이트를 실제로 재서 나온 값(가로 넘침 429px 등) |
 | [research/원문조사.md](research/원문조사.md) | 회사 소개서 38쪽 전수 조사 — 연혁 101건·인증·특허·포트폴리오 |
+| [docs/배포.md](docs/배포.md) | GitHub Pages 배포 · 도메인 전환 시 DNS 레코드 · 저장소에 없는 것 |
 
 > **2026-08-07 개정.** 형태의 정본이 사용자가 만든 피그마 시안(`money-fizzy-75893311.figma.site`)으로
 > 바뀌었다. 홈은 **한 페이지 스크롤**이 되었고 `/about`·`/business`·`/solutions`·`/contact` 는 없어졌다.
@@ -36,7 +37,7 @@ site/                 Next.js 16 (App Router) · Tailwind 4 · 정적 내보내�
 └─ public/media/
     ├─ credentials/   증서 실물 7장
     └─ works/         구축 화면 캡처 29장 ← scripts/build-media.mjs 가 굽는다
-research/             원문 PDF·페이지 이미지·전수 조사·추출이미지 39장
+research/             원문 PDF·페이지 이미지·추출이미지 39장 ⚠ 저장소에 없다(로컬 전용, docs/배포.md)
 scripts/build-media.mjs  추출이미지 → webp 변환 (사업 이름으로 개명)
 ```
 
