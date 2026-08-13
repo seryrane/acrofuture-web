@@ -1,0 +1,486 @@
+@import 'tailwindcss';
+
+/* 한글 글꼴 — **우리 서버에서** 낸다. `scripts/build-fonts.mjs` 가 만든다.
+   ⚠ 여기서 @import 하면 스타일시트 한 장에 합쳐져 **요청이 안 는다.** 예전처럼 <head> 에서
+   남의 CDN 을 부르면 렌더를 막는 요청이 하나 더 생기고, 그 도메인이 막히는 망에서는
+   한글이 통째로 맑은 고딕으로 떨어진다. */
+@import './pretendard.css';
+
+/**
+ * 디자인 토큰 — 색·치수는 **여기서만** 고른다.
+ *
+ * 2026-08-07 개편: 사용자가 직접 만든 시안(money-fizzy-75893311.figma.site)의 형태를 정본으로 삼는다.
+ * 아래 값은 그 사이트에서 **실제로 잰 것**이다 — 눈대중으로 비슷하게 맞추면 어딘가 한 군데가 어긋나고,
+ * 그 한 군데 때문에 "비슷한데 뭔가 다른" 화면이 된다.
+ *
+ *   바탕 #070C1A / 한 단 올린 구간 #0C1225 / 밝은 구간 #F5F7FB
+ *   글자 #EEF1F8 (어두운 위) · 강조 #4472F5 · 모서리 14px · 구간 상하 여백 128px · 본문 폭 1280px
+ */
+@theme {
+  --breakpoint-pc: 48rem;
+  --breakpoint-wide: 64rem;
+
+  /* ── 글꼴 ──────────────────────────────────────────────────────────────
+     ⚠ 한글을 **1순위**로 둔다. 영문 글꼴을 앞에 두면 한글만 폴백으로 떨어져 글꼴이 섞여 보인다.
+     ⚠ 시안은 Noto Sans KR 로 그려졌지만(피그마에 Pretendard 가 없었다) 웹에서는 Pretendard 를 쓴다 —
+       같은 계열의 고딕인데 자간이 좁아 큰 제목에서 훨씬 단단하게 보인다.
+     ⚠ 숫자·영문 표제는 Plus Jakarta Sans 다. 시안에서 쓰던 그대로다. */
+  --font-sans:
+    'Pretendard Variable', Pretendard, 'Noto Sans KR', -apple-system, 'Apple SD Gothic Neo',
+    'Malgun Gothic', system-ui, sans-serif;
+  --font-display:
+    var(--font-jakarta), 'Pretendard Variable', Pretendard, 'Noto Sans KR', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
+
+  /* ── 바탕 ──────────────────────────────────────────────────────────────
+     어두운 구간이 기본이고, 밝은 구간이 사이사이 끼어들어 숨을 만든다. */
+  --color-deep: #070c1a;
+  --color-deep-2: #0c1225;
+  --color-deep-3: #111a33;
+  --color-mist: #f5f7fb;
+  --color-paper: #ffffff;
+
+  /* ── 글자 ──────────────────────────────────────────────────────────────
+     대비를 재서 정했다(본문 4.5:1 이상). */
+  --color-on-deep: #eef1f8;
+  --color-on-deep-muted: #9aa7c2;
+  --color-on-deep-subtle: #6d7c9c;
+  --color-ink: #0b1220;
+  --color-ink-muted: #4a5568;
+  --color-ink-subtle: #6b7482;
+  --color-rule: #e3e8f0;
+
+  /* ── 강조 ──────────────────────────────────────────────────────────────
+     ⚠ 파랑은 **누를 수 있는 것과 지금 고른 것**에만 쓴다. 장식으로 쓰기 시작하면
+       진짜 눌러야 할 버튼이 묻힌다. */
+  --color-blue: #4472f5;
+  --color-blue-hi: #6f92ff;
+  --color-blue-deep: #2c53cc;
+
+  /* 브랜드 — `acroFuture` 중 **F 만 연두**, 나머지는 파랑.
+     지금 로고 파일의 원색은 파랑 #4A8ECC · 연두 #8EC31F 인데, 어두운 바탕에서는 둘 다 가라앉는다.
+     같은 색상을 유지하면서 밝기만 올린 값을 쓴다.
+     ⚠ 강조색(--color-blue)과 따로 둔다. 로고 색을 바꿨다고 버튼 색까지 따라 바뀌면 안 된다. */
+  --color-brand-blue: #5b8cff;
+  --color-brand-leaf: #a7e04b;
+
+  /* 업무 포탈 — **포탈의 강조색이 보라**라서 이 사이트에서도 보라로 낸다(사용자 확인 2026-08-07).
+     ⚠ 회사 소개(파랑)와 사내 도구(보라)를 색으로 갈라 둔다. 링크가 두 군데(머리·연락처)에 있는데
+       둘 다 같은 색이어야 "저기 누르면 밖으로 나간다"가 학습된다. */
+  --color-portal: #a78bfa;
+  --color-portal-deep: #7c5cf0;
+
+  /* 사업 영역마다 다른 색 — 카드 네 장을 눈으로 구분하기 위한 것이지 의미가 다른 게 아니다 */
+  --color-tone-finance: #5b8cff;
+  --color-tone-mobility: #9a86f7;
+  --color-tone-lbs: #3fc0e6;
+  --color-tone-etc: #4bd4a0;
+
+  /* 움직임 — 곡선 하나로 묶는다. 제각각이면 화면이 산만해진다 */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: dark;
+  /* `height: auto` 를 전이할 수 있게 한다 — 서랍이 내용 높이만큼 부드럽게 열린다.
+     ⚠ 상속되는 성질이라 뿌리에 한 번만 건다. 이게 없으면 auto↔0 이 순간이동한다. */
+  interpolate-size: allow-keywords;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* 앵커로 뛸 때 고정 머리 아래로 숨지 않게 */
+  scroll-padding-top: 92px;
+}
+
+/* ── 쪽에서 쪽으로 넘어갈 때 (2026-08-11) ────────────────────────────────
+   정적 사이트라 링크를 누르면 브라우저가 문서를 통째로 바꾼다 — 그 사이 흰 깜빡임이 한 번 난다.
+   이 한 줄이면 브라우저가 **떠나는 화면과 오는 화면을 겹쳐서** 넘긴다.
+   ⚠ 못 알아듣는 브라우저는 지금까지와 **똑같이** 동작한다. 그래서 조건을 달지 않는다.
+   ⚠ 움직임 최소화는 아래 media 블록에서 따로 끈다 — 이건 시간 기반이라 duration 으로 꺼진다. */
+@view-transition {
+  navigation: auto;
+}
+
+/* 머리는 두 쪽에 다 있는 **같은 물건**이다. 이름을 주지 않으면 뿌리와 함께 통째로 교차 페이드되어
+   같은 자리에 있는 머리가 한 번 깜빡인다. 이름을 주면 제자리에 가만히 있는다. */
+.vt-header {
+  view-transition-name: site-header;
+}
+
+/* 목록의 그림 ↔ 상세의 그림. 같은 이름이 양쪽에 하나씩 있으면 브라우저가 **같은 것으로 보고**
+   자리와 크기를 이어 준다 — 카드가 상세 화면으로 자라난다.
+   ⚠ 한 쪽에 같은 이름이 둘 있으면 그 전환은 통째로 취소된다(브라우저가 어느 쪽인지 모른다).
+   그래서 상세에서는 **첫 장에만** 준다. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--color-deep);
+  color: var(--color-on-deep);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  /* ⚠ 개편 전 사이트는 클리핑 안 된 슬라이더 때문에 가로로 429px 넘쳤다.
+     넘침은 한 곳만 새도 페이지 전체가 흔들리므로 뿌리에서 자른다. */
+  overflow-x: clip;
+
+  /* ⚠ 한글은 낱말 안에서 끊지 않는다. 기본값이면 "지킵니 / 다" 같은 줄바꿈이 나온다 —
+     큰 제목에서 특히 눈에 띈다. 대신 끊을 데 없는 긴 영문·URL 은 그때만 끊게 열어 둔다. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-blue) 35%, transparent);
+}
+
+/* ── 글자가 놓이는 방식 (2026-08-11) ─────────────────────────────────────
+   ⚠ **제목 위아래에는 눈에 안 보이는 여백이 붙어 있다**(half-leading). 그래서 시안에서 잰
+   `mt-5`·`mt-4` 를 그대로 넣어도 화면에서는 더 벌어져 보인다 — "비슷한데 어딘가 헐겁다"의
+   흔한 정체가 이것이다. `text-box` 로 그 여백을 걷으면 **잰 값이 곧 보이는 값**이 된다.
+   ⚠ 큰 글자에만 건다. 본문에까지 걸면 줄과 줄 사이가 좁아져 읽기 힘들어진다.
+   ⚠ 못 알아듣는 브라우저는 지금 그대로다(기능 질의 없이 그냥 무시된다). */
+h1,
+h2 {
+  text-box: trim-both cap alphabetic;
+}
+
+/* ⚠ 제목은 줄 길이를 고르게 — 마지막 줄에 한 낱말만 떨어지는 것을 막는다.
+   본문은 `pretty` — 문단 끝의 외톨이 낱말만 막고 줄 길이는 그대로 둔다(balance 는 긴 글에서
+   느리고, 브라우저가 줄 수를 제한한다). 위의 `word-break: keep-all` 과 짝이다. */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* 초점은 반드시 보인다 — 키보드로 다니는 사람이 지금 어디 있는지 알아야 한다 */
+:focus-visible {
+  outline: 2px solid var(--color-blue-hi);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── 화면 밖은 그리지 않는다 (2026-08-11) ────────────────────────────────
+   ⚠ `content-visibility: auto` 는 화면 밖 요소의 **레이아웃·페인트를 통째로 건너뛴다.**
+   홈은 아홉 구간이고 사업 이력은 103행이라, 첫 화면을 그릴 때 대부분이 헛일이었다.
+   ⚠⚠ **`contain-intrinsic-size` 를 반드시 함께 준다.** 없으면 안 그린 것의 높이를 0 으로 잡아
+   문서가 짧아졌다가 스크롤하면서 늘어난다 — 스크롤바가 요동치고, 앵커로 뛰면 엉뚱한 데 선다.
+   `auto <크기>` 로 주면 **한 번 그린 뒤에는 실제 높이를 기억**해서 두 번째부터는 정확하다.
+   ⚠ 첫 구간(히어로)에는 걸지 않는다 — 어차피 처음부터 보이는 자리라 얻을 게 없고,
+   가장 중요한 화면을 건너뛰기 판단에 맡길 이유가 없다.
+   ⚠ 목록 행은 링크라 **검색(Ctrl+F)과 탭 이동이 살아 있어야** 한다. `auto` 는 그때 저절로
+   펴 준다(`hidden` 과 달리 접근을 막지 않는다) — 그래서 `auto` 여야 한다. */
+.cv-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+.cv-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 60px;
+}
+
+/* ── 바탕의 격자 ────────────────────────────────────────────────────────
+   시안의 첫 화면에 깔린 옅은 격자다. 이미지가 아니라 그라디언트 두 장이라 무게가 없다. */
+.af-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  /* 가장자리로 갈수록 사라진다 — 격자가 화면 끝에서 잘리면 그 선이 눈에 걸린다 */
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 100%);
+}
+
+/* ── 등장 효과 — 한 번, 짧게, 16px. 같은 곡선으로 묶는다 ────────────────
+   ⚠ 자매 프로젝트에서 배운 것: 등장 애니메이션이 transform 을 fill:both 로 잡으면
+   그 뒤의 hover/layout 이동이 통째로 죽는다. 그래서 여기서는 **끝나면 값을 놓는**
+   방식(클래스 토글 + transition)만 쓴다. */
+.rise {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s var(--ease-out-soft),
+    transform 0.7s var(--ease-out-soft);
+}
+.rise[data-in='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── 스크롤에 물린 등장 (2026-08-11) ──────────────────────────────────────
+   ⚠ 위의 방식은 **지나가는 순간 한 번 튀어오른다**(관찰자가 임계를 넘기면 그때 0.7초 재생).
+   스크롤을 천천히 굴리면 화면 중간에서 갑자기 뜨는 게 눈에 걸린다.
+   `view()` 타임라인은 **시간이 아니라 스크롤 위치가 진행률**이라, 올라오는 만큼 떠오르고
+   되돌리면 되돌아간다. 손에 붙는 느낌의 차이가 여기서 난다.
+   ⚠ 이 규칙은 위의 transition 방식을 **덮는다**(애니메이션이 보통 선언보다 세다) —
+   그래서 미지원 브라우저만 자연히 옛 경로로 남는다. 지울 코드가 없다.
+   ⚠⚠ **관찰자를 걷어내지 않는다.** `data-in` 은 `.rise` 만의 것이 아니라 아래 도해가
+   그려지는 순서(`.rise[data-in='true'] .af-dia .af-draw`)를 여는 열쇠이기도 하다.
+   그 순서는 "선 → 이름표 → 결론"이라는 **시간 기반 연출**이라 스크롤 진행률로 못 옮긴다.
+   여기서 관찰자를 지우면 도해가 영영 안 그려진다.
+   ⚠ 범위를 `entry` 안에서 닫는다. `cover` 로 끝을 잡으면 화면보다 **긴 블록**에서 끝점이
+   한참 뒤로 밀려 글이 오래도록 반투명하게 남는다. */
+@supports (animation-timeline: view()) {
+  .rise {
+    animation: rise-in linear both;
+    animation-timeline: view();
+    animation-range: entry 5% entry 60%;
+  }
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* ── 도해가 그려지는 순서 ──────────────────────────────────────────────
+   ⚠ 그림을 그냥 얹지 않는다. **일이 흐르는 방향대로 선이 그려지고**, 그 다음 이름표가 뜨고,
+   마지막에 결론(파란 요소)이 내려앉는다. 연출이 곧 설명이 되게 하려는 것이다.
+   ⚠ 시작 상태를 CSS 로만 숨긴다 — JS 가 늦어도 그림이 사라진 채로 남지 않게,
+   보이게 만드는 쪽(data-in)이 아니라 감추는 쪽에 조건을 건다. */
+.af-dia .af-draw {
+  /* pathLength=1 로 정규화해 두어서 길이가 제각각인 선을 같은 규칙으로 그린다 */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.af-dia .af-fade {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.af-dia .af-land {
+  opacity: 0;
+  transform: scale(0.82);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+/* ⚠ `:not([data-active])` 가 핵심이다 — 캐러셀처럼 스스로 켜고 끄는 그림까지 조상이 켜 버리면
+   더 구체적인 이 규칙이 이겨서 넘길 때마다 다시 그려지지 않는다 */
+.rise[data-in='true'] .af-dia:not([data-active]) .af-draw,
+.af-dia[data-active='true'] .af-draw {
+  animation: af-draw 0.9s var(--ease-out-soft) forwards;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+.rise[data-in='true'] .af-dia:not([data-active]) .af-fade,
+.af-dia[data-active='true'] .af-fade {
+  animation: af-fade 0.6s var(--ease-out-soft) forwards;
+  animation-delay: calc(240ms + var(--i, 0) * 70ms);
+}
+.rise[data-in='true'] .af-dia:not([data-active]) .af-land,
+.af-dia[data-active='true'] .af-land {
+  animation: af-land 0.7s var(--ease-out-soft) forwards;
+  animation-delay: calc(620ms + var(--i, 0) * 90ms);
+}
+
+@keyframes af-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes af-fade {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes af-land {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── 덮개가 여닫히는 움직임 (2026-08-11) ─────────────────────────────────
+   ⚠ 여기 쓰인 재료 셋을 먼저 적어 둔다. 셋이 **함께 있어야** 동작한다.
+     ① `@starting-style` — 요소가 **막 나타날 때의 첫 값**. 이게 없으면 브라우저는 "처음부터
+        그 값이었다"고 보고 등장 전이를 아예 안 그린다.
+     ② `transition-behavior: allow-discrete` (transition 목록의 `allow-discrete`) —
+        `display` 처럼 중간값이 없는 성질도 전이 대상으로 삼는다. 이게 없으면 **사라질 때**
+        `display: none` 이 즉시 걸려 퇴장이 한 프레임도 안 보인다.
+     ③ `overlay` — `<dialog>` 는 최상위 레이어에 올라가 있다가 닫히는 순간 내려온다.
+        이것도 allow-discrete 로 잡아야 퇴장 애니메이션이 보이는 채로 끝난다.
+   ⚠ 등장/퇴장 시간이 다르다: 나타날 때는 넉넉히, 사라질 때는 짧게. 퇴장이 길면 굼떠 보인다. */
+.af-lightbox {
+  /* 브라우저 기본값(테두리·여백·검은 글자·가운데 마진)을 걷어낸다 */
+  border: 0;
+  color: inherit;
+  /* dialog 는 기본이 블록이라 가운데 정렬을 직접 잡는다. 열렸을 때만 편다 */
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(10px) scale(0.985);
+  transition:
+    opacity 0.2s var(--ease-out-soft),
+    transform 0.28s var(--ease-out-soft),
+    display 0.28s allow-discrete,
+    overlay 0.28s allow-discrete;
+}
+.af-lightbox[open] {
+  display: flex;
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  .af-lightbox[open] {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+}
+.af-lightbox::backdrop {
+  background: rgb(0 0 0 / 85%);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition:
+    opacity 0.22s var(--ease-out-soft),
+    display 0.22s allow-discrete,
+    overlay 0.22s allow-discrete;
+}
+.af-lightbox[open]::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  .af-lightbox[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/* ── 좁은 화면의 메뉴 서랍 ────────────────────────────────────────────────
+   ⚠ 예전에는 `{open && <nav>}` 라 **툭 나타나고 툭 사라졌다.** 사이트 전체가 곡선 하나로
+   묶여 있는데 가장 자주 눌리는 조작만 각져 있었다.
+   ⚠ 높이를 `auto` 에서 `0` 으로 전이하려면 `interpolate-size: allow-keywords` 가 필요하다
+   (:root 에 걸어 상속시킨다). 없으면 auto 는 전이가 안 돼서 높이가 순간이동한다.
+   ⚠ 그래도 못 알아듣는 브라우저에서는 **그냥 즉시 열리고 닫힌다** — 기능이 사라지지 않는다. */
+/* ⚠⚠ **좁은 화면으로 못 박는다.** 이 규칙들을 전역에 두면 `pc:hidden`(Tailwind)과 특정도가
+   같아서(둘 다 클래스 하나) 뒤에 온 우리 쪽이 이긴다 — 메뉴를 연 채 창을 넓히면 데스크톱에서도
+   서랍이 그대로 남는다. 어차피 좁은 화면 전용 물건이므로 조건 안에 둔다. */
+@media (width < 48rem) {
+  .af-drawer {
+    display: block;
+    height: auto;
+    opacity: 1;
+    overflow: clip;
+    transition:
+      height 0.32s var(--ease-out-soft),
+      opacity 0.22s var(--ease-out-soft),
+      display 0.32s allow-discrete;
+  }
+  .af-drawer[data-open='false'] {
+    display: none;
+    height: 0;
+    opacity: 0;
+  }
+  @starting-style {
+    .af-drawer[data-open='true'] {
+      height: 0;
+      opacity: 0;
+    }
+  }
+}
+
+/* ── 사례 레일 (2026-08-11) ──────────────────────────────────────────────
+   ⚠ 진짜 스크롤 상자다. 밀기·튕기기·관성·키보드 화살표가 전부 브라우저 것이라 공짜다.
+   ⚠ `scroll-snap-type: x mandatory` — 손을 떼면 반드시 한 장에 맞춰 선다. `proximity` 로 두면
+   어중간하게 두 장 걸친 채로 멈추는 자리가 생긴다(그 상태에서는 지금 장이 뭔지도 애매하다).
+   ⚠ `overscroll-behavior-x: contain` — 레일 끝에서 더 밀 때 **페이지가 옆으로 밀리거나
+   브라우저 뒤로가기 제스처가 걸리는 것**을 막는다. 이게 없으면 마지막 장에서 한 번 더 밀었을 때
+   갑자기 이전 페이지로 나가 버린다(모바일에서 실제로 잘 일어난다).
+   ⚠ 스크롤 막대는 감춘다 — 판이 카드라 막대가 보이면 카드 안에 창이 든 것처럼 보인다.
+   조작 가능하다는 신호는 아래 점과 판 자체가 이미 준다.
+   ⚠ 한 장이 레일 폭과 **정확히 같아야** 한다(JS 가 `i × clientWidth` 로 자리를 잡는다).
+   그래서 `gap` 을 주지 않는다 — 간격은 판 안쪽 여백으로 만든다. */
+.af-rail {
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.af-rail::-webkit-scrollbar {
+  display: none;
+}
+.af-slide {
+  flex: 0 0 100%;
+  /* 안쪽의 넓은 것(표·긴 제목)이 판을 늘려 폭 계산을 깨뜨리지 않게 */
+  min-width: 0;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+/* ── 자동 넘김의 남은 시간 ──────────────────────────────────────────────
+   ⚠ `width` 가 아니라 `transform` 으로 찬다 — 폭을 매 프레임 바꾸면 그 줄의 레이아웃을
+   다시 계산한다. 4.5초 내내 도는 것이라 이 차이가 실제로 쌓인다.
+   ⚠ 길이는 JS 가 `animationDuration` 으로 준다(ROLL_MS 와 두 벌이 되지 않게). */
+.af-roll {
+  transform-origin: left center;
+  animation: af-roll linear forwards;
+}
+@keyframes af-roll {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* 고객사 띠가 한 방향으로 흐른다 — 목록이 길어도 자리를 안 먹는다 */
+@keyframes af-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 움직임을 끈 사람에게는 **완성된 그림**을 그냥 보여 준다 — 안 보이는 게 아니라 안 움직이는 것이다 */
+  html {
+    scroll-behavior: auto;
+  }
+  .af-dia .af-draw {
+    stroke-dashoffset: 0;
+  }
+  .af-dia .af-fade,
+  .af-dia .af-land {
+    opacity: 1;
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  /* ⚠⚠ 위의 `animation-duration: 0.01ms` 는 **스크롤에 물린 애니메이션을 못 끈다** —
+     그건 시간이 아니라 스크롤 위치로 도는 것이라 길이가 아무 뜻이 없다. 그리고 애니메이션은
+     보통 선언보다 세므로 아래 `opacity: 1` 만으로도 못 이긴다. 이름을 지워야 실제로 꺼진다.
+     이걸 빠뜨리면 "움직임 최소화"를 켠 사람의 화면에서 글이 스크롤 따라 계속 흐려졌다 진해진다. */
+  .rise {
+    animation-name: none;
+    animation-timeline: auto;
+    opacity: 1;
+    transform: none;
+  }
+}

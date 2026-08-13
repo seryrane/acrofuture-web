@@ -1,0 +1,31 @@
+# 의존성·빌드 산출물 — 저장소에 두면 안 되는 것들
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# 환경 변수·인증 정보
+.env*
+*.pem
+
+# 로컬 실행 흔적
+logs/
+npm-debug.log*
+yarn-debug.log*
+.pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 원본 자료(회사 소개서 PDF·추출 이미지 53MB)는 로컬에만 둔다.
+# 공개 저장소라 소개서 원문이 통째로 배포되는 것을 피하고, 저장소도 가볍게 유지한다.
+# ⚠ 이 자료가 없으면 scripts/build-media.mjs 로 캡처를 **다시 구울 수 없다** —
+#   다른 PC 에서 이미지를 새로 구워야 하면 research/ 를 따로 복사해 와야 한다.
+#   (구워 놓은 결과물 site/public/media 는 저장소에 있으므로 빌드·배포에는 지장 없다)
+research/*
+!research/*.md
+!research/추가이미지/
+research/추가이미지/*
+!research/추가이미지/README.md
