@@ -37,12 +37,18 @@ const TONE: Record<Solution['tone'], string> = {
   cyan: 'var(--color-tone-lbs)',
 }
 
-/** 시안(Version 10)에서 옮겨 온 대시보드 그림. Smart Rental 만 같은 화법으로 새로 그렸다 */
-const MOCKUP: Record<string, () => React.JSX.Element> = {
-  actrack: AcTrackMockup,
-  cacago: CacagoMockup,
-  'smart-zone-cast': SmartZoneMockup,
-  'smart-rental': SmartRentalMockup,
+/**
+ * 시안(Version 10)에서 옮겨 온 대시보드 그림. Smart Rental 만 같은 화법으로 새로 그렸다.
+ *
+ * `bg` 는 각 SVG 안 바탕 사각형과 **같은 색**이다. 판을 이 색으로 칠해 두면 그림이 세로로 남는
+ * 자리(레터박스)가 그림과 이어져 보여서 오른쪽이 통째로 화면처럼 꽉 찬다.
+ * ⚠ 색이 어긋나면 그림 위아래에 띠가 생긴다. SVG 의 바탕 색을 바꾸면 여기도 같이 바꾼다.
+ */
+const MOCKUP: Record<string, { C: () => React.JSX.Element; bg: string }> = {
+  actrack: { C: AcTrackMockup, bg: '#0a1128' },
+  cacago: { C: CacagoMockup, bg: '#0c0a1a' },
+  'smart-zone-cast': { C: SmartZoneMockup, bg: '#061812' },
+  'smart-rental': { C: SmartRentalMockup, bg: '#06121a' },
 }
 
 const WORK_BY_SLUG = new Map(WORKS.map((w) => [w.slug, w]))
@@ -98,7 +104,7 @@ export function SolutionsBand() {
   const s = SOLUTIONS[active]
   const color = TONE[s.tone]
   const ws = worksOf(s)
-  const Mockup = MOCKUP[s.key]
+  const mock = MOCKUP[s.key]
 
   return (
     <Section id="solutions" tone="light">
@@ -146,7 +152,8 @@ export function SolutionsBand() {
           className="mt-8 overflow-hidden rounded-[14px] border bg-paper"
           style={{ borderColor: `color-mix(in oklab, ${color} 26%, var(--color-rule))` }}
         >
-          <div className="grid pc:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
+          {/* 시안 비율 그대로 — 오른쪽(그림)이 더 넓다. 왼쪽과 1:1 로 두면 그림이 작아 보인다 */}
+          <div className="grid pc:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
             {/* 왼쪽 — 무엇을 하는 물건인가 */}
             <div className="px-7 py-9 pc:px-10 pc:py-11">
               <div className="flex items-center gap-3">
@@ -227,76 +234,56 @@ export function SolutionsBand() {
               </a>
             </div>
 
-            {/* 오른쪽 — 근거. 시안의 목업 자리다(가짜 실적판 대신 진짜 계약을 놓는다) */}
-            <div
-              className="border-t border-rule px-7 py-9 pc:border-l pc:border-t-0 pc:px-9 pc:py-11"
-              style={{ background: `color-mix(in oklab, ${color} 4%, var(--color-mist))` }}
-            >
-              {/* 실제로 만든 화면 — 시안의 목업 자리다. 스톡이 아니라 이 솔루션을 받치는 사업의 캡처다 */}
-              {/* 시안의 대시보드 그림 — 그대로 옮겼다.
-                  ⚠ 안의 숫자는 잰 값이 아니라 그림의 일부다. **"화면 예시" 표기를 떼지 않는다** —
-                    떼는 순간 없는 실적을 내건 것이 된다. */}
-              {Mockup && (
-                <figure className="mb-6">
-                  <div className="overflow-hidden rounded-[12px] border border-rule">
-                    <Mockup />
-                  </div>
-                  <figcaption className="mt-2 text-[12px] text-ink-subtle">
-                    화면 예시 — 실제 운영 수치가 아닙니다
-                  </figcaption>
-                </figure>
-              )}
+            {/* 오른쪽 — 시안처럼 **그림만** 꽉 채운다. 목록을 같이 두면 그림이 작아져 허전해 보였다.
+                근거(특허·적용 사업)는 아래 띠로 내렸다 — 폭을 가로로 다 쓰니 오히려 더 잘 읽힌다. */}
+            {mock && (
+              <div
+                className="flex min-h-[280px] items-center justify-center border-t border-rule p-4 pc:border-l pc:border-t-0 pc:p-5"
+                /* ⚠ 안의 숫자는 잰 값이 아니라 그림의 일부다. 눈에 보이는 표기는 사용자 요청으로
+                   뗐지만(2026-08-14) 사실은 달라지지 않는다 — 대체텍스트로 남겨 둔다. */
+                role="img"
+                aria-label={`${s.name} 화면 예시 — 실제 운영 수치가 아닙니다`}
+                style={{ background: mock.bg }}
+              >
+                <mock.C />
+              </div>
+            )}
+          </div>
 
-              <p className="font-display text-[11.5px] font-bold tracking-[0.12em] text-ink-subtle">
-                무엇으로 뒷받침되는가
-              </p>
-
-              {s.patents?.length ? (
-                <ul className="mt-4 space-y-2">
-                  {s.patents.map((no) => {
-                    const p = PATENT_BY_NO.get(no as (typeof CREDENTIALS.patents)[number]['no'])
-                    return (
-                      <li
-                        key={no}
-                        className="rounded-[10px] border bg-white px-3.5 py-3"
-                        style={{ borderColor: `color-mix(in oklab, ${color} 30%, transparent)` }}
-                      >
-                        <p className="text-[11.5px] font-bold tracking-[0.1em]" style={{ color }}>
-                          등록 특허
-                        </p>
-                        <p className="mt-1 text-[14px] leading-[1.5] text-ink">{p?.name ?? no}</p>
-                        <p className="mt-1 font-display text-[12.5px] tabular-nums text-ink-subtle">{no}</p>
-                      </li>
-                    )
-                  })}
-                </ul>
-              ) : null}
-
-              <p className="mt-6 font-display text-[11.5px] font-bold tracking-[0.12em] text-ink-subtle">적용 사업</p>
-              <ul className="mt-3 space-y-2.5">
-                {ws.map((w) => (
-                  <li key={w.slug} className="flex gap-2.5">
-                    <span
-                      aria-hidden
-                      className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full"
-                      style={{ background: w.ongoing ? color : 'var(--color-ink-subtle)' }}
-                    />
-                    <span className="min-w-0">
-                      <Link
-                        href={`/works/${w.slug}/`}
-                        className="text-[14px] leading-[1.5] text-ink underline-offset-4 hover:underline"
-                      >
-                        {w.title}
-                      </Link>
-                      {/* ⚠ 고객사가 빈 사업이 있다(자사 상품). 빈 값에 구분점을 붙이면 점이 홀로 남는다 */}
-                      <span className="mt-0.5 block font-display text-[12px] tabular-nums text-ink-subtle">
-                        {[w.client, w.ongoing ? '운영중' : ''].filter(Boolean).join(' · ')}
-                      </span>
-                    </span>
+          {/* 근거 띠 — 이름은 우리가 붙였지만 그 밑의 계약은 진짜다. 그래서 항상 같이 놓는다 */}
+          <div
+            className="border-t border-rule px-7 py-5 pc:px-10"
+            style={{ background: `color-mix(in oklab, ${color} 4%, #ffffff)` }}
+          >
+            <p className="font-display text-[11px] font-bold tracking-[0.1em] text-ink-subtle">무엇으로 뒷받침되는가</p>
+            <ul className="mt-3 flex flex-wrap items-center gap-2">
+              {s.patents?.map((no) => {
+                const p = PATENT_BY_NO.get(no as (typeof CREDENTIALS.patents)[number]['no'])
+                return (
+                  <li
+                    key={no}
+                    title={p?.name}
+                    className="rounded-full border px-3 py-1.5 text-[13px] font-semibold"
+                    style={{ borderColor: `color-mix(in oklab, ${color} 42%, transparent)`, color }}
+                  >
+                    특허 {no}
                   </li>
-                ))}
-              </ul>
-            </div>
+                )
+              })}
+              {ws.map((w) => (
+                <li key={w.slug}>
+                  <Link
+                    href={`/works/${w.slug}/`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-white px-3 py-1.5 text-[13px] text-ink-muted transition-colors hover:border-ink-subtle hover:text-ink"
+                  >
+                    {w.ongoing && (
+                      <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
+                    )}
+                    {w.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* 아래 띠 — 지금 몇 번째를 보고 있는지 */}
