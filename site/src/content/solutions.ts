@@ -28,13 +28,15 @@ export interface Solution {
   /** 근거 — 특허 등록번호 (company.ts CREDENTIALS.patents 의 no 와 같은 값) */
   patents?: string[]
   /** 강조색 계열 — 화면이 카드마다 다른 색을 쓸 때 본다 */
-  tone: 'blue' | 'violet' | 'cyan'
+  tone: 'blue' | 'violet' | 'green' | 'cyan'
   /**
    * 아이콘 — **지금 홈페이지가 쓰는 파일 그대로**다(acrofuture.com/images/solution_*.svg).
    * ⚠ 새로 그리지 않는다. 이미 쓰던 상징을 바꾸면 아는 사람이 못 알아본다.
    *   단색 도형이라 CSS 마스크로 색만 입힌다.
+   * ⚠ 구 사이트에 아이콘이 **3개뿐**이라 Smart Rental 은 없다. 남의 아이콘을 돌려쓰면 두 솔루션이
+   *   같은 상징을 갖게 되어 더 헷갈린다 — 없으면 비워 두고 화면은 글자 표식으로 대신한다.
    */
-  icon: string
+  icon?: string
 }
 
 export const SOLUTIONS: Solution[] = [
@@ -65,21 +67,17 @@ export const SOLUTIONS: Solution[] = [
     name: 'Cacago',
     tagline: '최적 경로로 배차부터 운송 완료까지',
     icon: '/media/brand/solution_cacago.svg',
-    desc: '배차와 경로를 자동으로 계산해 운송 전 과정을 한 화면에서 관리합니다. 차량 위치를 실시간으로 받아 경로를 다시 세우고, 대여·반납·회수 이력까지 같은 대장에서 다룹니다. 항만 물류 자동화와 자사 SMART RENTAL 운영에서 쌓은 것을 솔루션으로 묶었습니다.',
+    desc: 'AI 기반 최적 경로 알고리즘으로 배차부터 운송 완료까지 물류 전 과정을 자동화합니다. 차량 위치를 실시간으로 받아 경로를 다시 세우고, 배차 현황과 차량별 도착 예정을 한 화면에서 봅니다. 항만 물류 자동화에서 다뤄 온 문제를 솔루션으로 묶었습니다.',
     features: [
-      'AI 기반 최적 경로 배차',
-      '실시간 차량 위치 추적 — AcTrack 연계',
-      '운송 상태 · 이력 관리',
-      '대여 · 반납 · 회수 대장',
-      '관리자 웹 대시보드',
-      '바깥 시스템 연동 API',
+      'AI 최적 배차 알고리즘',
+      '실시간 경로 재계산',
+      '차량별 위치 추적 — AcTrack 연계',
+      '비용 · 효율 분석 리포트',
+      '기사용 모바일 앱',
+      'ERP · WMS 연동 API',
     ],
-    works: [
-      'smart-rental-solution',
-      'cyberlogitec-port-logistics-automation-system',
-      'vehicle-total-history-management-system',
-    ],
-    tone: 'cyan',
+    works: ['cyberlogitec-port-logistics-automation-system'],
+    tone: 'violet',
   },
   {
     key: 'smart-zone-cast',
@@ -101,6 +99,22 @@ export const SOLUTIONS: Solution[] = [
       'cbs-geofencing-platform-upgrade',
     ],
     patents: ['제10-1674367호'],
-    tone: 'violet',
+    tone: 'green',
+  },
+  {
+    key: 'smart-rental',
+    name: 'Smart Rental',
+    tagline: '대여부터 회수까지, 이동 자산 대장 한 곳에',
+    desc: '차량·장비처럼 이동하는 자산의 대여와 반납, 회수 이력을 한 대장에서 관리합니다. 자사 상품으로 2015년부터 직접 운영해 왔고, 차량 이력관리에서 같은 문제를 다뤄 왔습니다.',
+    features: [
+      '대여 · 반납 · 회수 이력 관리',
+      '자산 단위 상태 추적',
+      '관리자 웹 대시보드',
+      '가동률 · 회수 예정 집계',
+      '차량 단위 이력 조회',
+      'AcTrack 위치 데이터 연계',
+    ],
+    works: ['smart-rental-solution', 'vehicle-total-history-management-system'],
+    tone: 'cyan',
   },
 ]

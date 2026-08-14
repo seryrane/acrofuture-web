@@ -5,6 +5,12 @@ import { useState } from 'react'
 
 import { Rise } from '@/components/Rise'
 import { Section, SectionHead } from '@/components/ui/Section'
+import {
+  AcTrackMockup,
+  CacagoMockup,
+  SmartRentalMockup,
+  SmartZoneMockup,
+} from '@/components/home/SolutionMockups'
 import { CREDENTIALS } from '@/content/company'
 import { SOLUTIONS, type Solution } from '@/content/solutions'
 import { WORKS } from '@/content/works'
@@ -27,7 +33,16 @@ import { WORKS } from '@/content/works'
 const TONE: Record<Solution['tone'], string> = {
   blue: 'var(--color-tone-finance)',
   violet: 'var(--color-tone-mobility)',
+  green: 'var(--color-tone-etc)',
   cyan: 'var(--color-tone-lbs)',
+}
+
+/** 시안(Version 10)에서 옮겨 온 대시보드 그림. Smart Rental 만 같은 화법으로 새로 그렸다 */
+const MOCKUP: Record<string, () => React.JSX.Element> = {
+  actrack: AcTrackMockup,
+  cacago: CacagoMockup,
+  'smart-zone-cast': SmartZoneMockup,
+  'smart-rental': SmartRentalMockup,
 }
 
 const WORK_BY_SLUG = new Map(WORKS.map((w) => [w.slug, w]))
@@ -37,6 +52,7 @@ const PATENT_BY_NO = new Map(CREDENTIALS.patents.map((p) => [p.no, p]))
 function worksOf(s: Solution) {
   return s.works.map((slug) => WORK_BY_SLUG.get(slug)).filter((w) => w !== undefined)
 }
+
 
 /**
  * 지표 세 칸 — **잰 수치가 아니라 센 수치**다.
@@ -82,6 +98,7 @@ export function SolutionsBand() {
   const s = SOLUTIONS[active]
   const color = TONE[s.tone]
   const ws = worksOf(s)
+  const Mockup = MOCKUP[s.key]
 
   return (
     <Section id="solutions" tone="light">
@@ -137,7 +154,15 @@ export function SolutionsBand() {
                   className="flex h-12 w-12 items-center justify-center rounded-[14px] bg-white"
                   style={{ boxShadow: `0 10px 30px -14px ${color}` }}
                 >
-                  <Icon src={s.icon} color={color} />
+                  {/* ⚠ Smart Rental 은 전용 아이콘이 없다(구 사이트에 3개뿐). 남의 아이콘을 돌려쓰면
+                      두 솔루션이 같은 상징을 갖게 되므로 글자 표식으로 대신한다 */}
+                  {s.icon ? (
+                    <Icon src={s.icon} color={color} />
+                  ) : (
+                    <span className="font-display text-[19px] font-extrabold" style={{ color }}>
+                      {s.name.charAt(0)}
+                    </span>
+                  )}
                 </span>
                 <span
                   className="rounded-full border px-3 py-1 text-[12px] font-semibold"
@@ -207,6 +232,21 @@ export function SolutionsBand() {
               className="border-t border-rule px-7 py-9 pc:border-l pc:border-t-0 pc:px-9 pc:py-11"
               style={{ background: `color-mix(in oklab, ${color} 4%, var(--color-mist))` }}
             >
+              {/* 실제로 만든 화면 — 시안의 목업 자리다. 스톡이 아니라 이 솔루션을 받치는 사업의 캡처다 */}
+              {/* 시안의 대시보드 그림 — 그대로 옮겼다.
+                  ⚠ 안의 숫자는 잰 값이 아니라 그림의 일부다. **"화면 예시" 표기를 떼지 않는다** —
+                    떼는 순간 없는 실적을 내건 것이 된다. */}
+              {Mockup && (
+                <figure className="mb-6">
+                  <div className="overflow-hidden rounded-[12px] border border-rule">
+                    <Mockup />
+                  </div>
+                  <figcaption className="mt-2 text-[12px] text-ink-subtle">
+                    화면 예시 — 실제 운영 수치가 아닙니다
+                  </figcaption>
+                </figure>
+              )}
+
               <p className="font-display text-[11.5px] font-bold tracking-[0.12em] text-ink-subtle">
                 무엇으로 뒷받침되는가
               </p>
