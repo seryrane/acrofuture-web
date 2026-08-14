@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Rise } from '@/components/Rise'
 import { SOLUTION_MOCKUP } from '@/components/home/SolutionMockups'
@@ -374,6 +374,25 @@ export function BusinessAreas() {
   /** 한 번에 하나만 연다 — 넷을 다 펼치면 이 구간만 화면 여섯 개 길이가 된다 */
   const [openKey, setOpenKey] = useState<Area['key'] | null>(null)
   const openArea = AREAS.find((a) => a.key === openKey) ?? null
+  const detailRef = useRef<HTMLDivElement>(null)
+
+  /**
+   * 펼친 판으로 데려간다.
+   *
+   * ⚠ 판이 격자 **아래**에 열려서, 위쪽 카드(01·02)를 누르면 화면 밖에서 열린다.
+   *   누른 사람 눈에는 **아무 일도 안 일어난 것으로 보인다** — 실제로 그렇게 보고됐다.
+   *   카드 안에서 펼치던 때는 없던 문제이므로, 판을 밖으로 뺀 대가로 이 이동이 반드시 따라와야 한다.
+   * ⚠ 머리말이 화면 위에 붙어 있어 그 높이만큼 뺀다. 안 빼면 판 제목이 머리말에 가린다.
+   */
+  useEffect(() => {
+    const el = detailRef.current
+    if (!openKey || !el) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({
+      top: el.getBoundingClientRect().top + window.scrollY - 88,
+      behavior: reduce ? 'auto' : 'smooth',
+    })
+  }, [openKey])
 
   return (
     <Section id="business" tone="deep">
@@ -394,7 +413,11 @@ export function BusinessAreas() {
         ))}
       </div>
 
-      {openArea && <AreaDetail area={openArea} onClose={() => setOpenKey(null)} />}
+      {openArea && (
+        <div ref={detailRef} className="scroll-mt-24">
+          <AreaDetail area={openArea} onClose={() => setOpenKey(null)} />
+        </div>
+      )}
     </Section>
   )
 }
