@@ -7,6 +7,12 @@
  *   계약서가 있는 것들이라, 같이 놓여야 "만들 줄 안다"는 말이 증거가 된다.
  * ⚠ `works` 는 `works.ts` 의 slug 다. `patents` 는 `company.ts` 의 CREDENTIALS.patents 등록번호다.
  * ⚠ 성능 수치(정확도 몇 m, 배터리 몇 % 절감)는 **적지 않는다** — 잰 자료가 없다.
+ *   2026-08-14 시안이 "95%+ 실내 측위 정확도 · 60% 배터리 절감 · 23% 시간 단축 · 38% 오픈율"을
+ *   들고 왔지만 전부 자리표시자라 옮기지 않았다. 화면의 지표 세 칸은 **셀 수 있는 사실**
+ *   (특허 건수 · 사업 이력 건수 · 시작 연도)로 채운다 — 값은 이 파일과 works.ts 에서 코드가 센다.
+ *   ⚠ AcTrack 에 시안이 붙인 **BLE 는 넣지 않았다.** 근거가 되는 사업이 GPS·WiFi 뿐이다.
+ *
+ * ⚠ 순서가 화면 탭 순서다(사용자 시안 기준: AcTrack → Cacago → Smart Zone Cast).
  */
 
 export interface Solution {
@@ -55,6 +61,27 @@ export const SOLUTIONS: Solution[] = [
     tone: 'blue',
   },
   {
+    key: 'cacago',
+    name: 'Cacago',
+    tagline: '최적 경로로 배차부터 운송 완료까지',
+    icon: '/media/brand/solution_cacago.svg',
+    desc: '배차와 경로를 자동으로 계산해 운송 전 과정을 한 화면에서 관리합니다. 차량 위치를 실시간으로 받아 경로를 다시 세우고, 대여·반납·회수 이력까지 같은 대장에서 다룹니다. 항만 물류 자동화와 자사 SMART RENTAL 운영에서 쌓은 것을 솔루션으로 묶었습니다.',
+    features: [
+      'AI 기반 최적 경로 배차',
+      '실시간 차량 위치 추적 — AcTrack 연계',
+      '운송 상태 · 이력 관리',
+      '대여 · 반납 · 회수 대장',
+      '관리자 웹 대시보드',
+      '바깥 시스템 연동 API',
+    ],
+    works: [
+      'smart-rental-solution',
+      'cyberlogitec-port-logistics-automation-system',
+      'vehicle-total-history-management-system',
+    ],
+    tone: 'cyan',
+  },
+  {
     key: 'smart-zone-cast',
     name: 'Smart Zone Cast',
     tagline: '정확한 타이밍에 딱, 실시간 지역 발송 메시지',
@@ -75,24 +102,5 @@ export const SOLUTIONS: Solution[] = [
     ],
     patents: ['제10-1674367호'],
     tone: 'violet',
-  },
-  {
-    key: 'cacago',
-    name: 'Cacago',
-    tagline: '복잡한 화물관리 그만, 최적 경로로 비용 절감',
-    icon: '/media/brand/solution_cacago.svg',
-    desc: '차량·장비처럼 이동하는 자산의 대여와 회수, 이력을 한 화면에서 관리합니다. 자사 상품인 SMART RENTAL 을 2015년부터 직접 운영해 왔고, 항만 물류 자동화와 차량 이력관리에서 같은 문제를 다뤄 왔습니다.',
-    features: [
-      '대여 · 반납 · 회수 이력 관리',
-      '관리자 웹 대시보드',
-      '차량 단위 이력 조회',
-      'AcTrack 위치 데이터 연계',
-    ],
-    works: [
-      'smart-rental-solution',
-      'cyberlogitec-port-logistics-automation-system',
-      'vehicle-total-history-management-system',
-    ],
-    tone: 'cyan',
   },
 ]

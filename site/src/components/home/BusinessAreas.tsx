@@ -8,6 +8,7 @@ import { Section, SectionHead } from '@/components/ui/Section'
 import { formatPeriod, sortByStart } from '@/components/pages/work-utils'
 import { FIELD_META } from '@/content/fields'
 import { imgSize } from '@/content/media-manifest'
+import { SHOWCASE } from '@/content/showcase'
 import { SOLUTIONS } from '@/content/solutions'
 import { approx, FIELD_COUNT, FIELD_START } from '@/content/stats'
 import { WORKS, type WorkField } from '@/content/works'
@@ -94,10 +95,8 @@ const AREAS: Area[] = [
   },
 ]
 
-function AreaCard({ area }: { area: Area }) {
-  const [open, setOpen] = useState(false)
+function AreaCard({ area, open, onToggle }: { area: Area; open: boolean; onToggle: () => void }) {
   const isField = area.key !== 'solution'
-  const recent = isField ? sortByStart(WORKS.filter((w) => w.field === area.key)).slice(0, 6) : []
   const count = isField ? FIELD_COUNT[area.key as WorkField] : 0
   const since = isField ? FIELD_START[area.key as WorkField] : 0
 
@@ -167,55 +166,151 @@ function AreaCard({ area }: { area: Area }) {
           ))}
         </ul>
 
-        {isField ? (
-          <>
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              className="mt-6 flex items-center gap-2 text-[14px] text-on-deep-muted transition-colors hover:text-on-deep"
-            >
-              <span
-                aria-hidden
-                className={`inline-block transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
-              >
-                ⌄
-              </span>
-              수행 사업 보기
-            </button>
+        {/* ⚠ 카드 안에서 펼치지 않고 **격자 아래 넓은 판**을 연다(2026-08-14 시안).
+            카드 안에서 펼치면 그 카드만 길어져 옆 카드와 높이가 어긋나고, 고객사·기술 스택·
+            포트폴리오를 240px 남짓한 폭에 우겨넣게 된다. */}
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          className="mt-6 flex items-center gap-2 text-[14px] text-on-deep-muted transition-colors hover:text-on-deep"
+        >
+          <span aria-hidden className={`inline-block transition-transform duration-300 ${open ? 'rotate-180' : ''}`}>
+            ⌄
+          </span>
+          {open ? '접기' : '이력 및 포트폴리오 보기'}
+        </button>
+      </div>
+    </div>
+  )
+}
 
-            {open && (
-              <div className="mt-4 border-t border-white/8 pt-4">
-                <ul className="space-y-2.5">
-                  {recent.map((w) => (
-                    <li key={w.slug} className="flex gap-3 text-[14px]">
-                      <span className="w-[104px] shrink-0 font-display tabular-nums text-on-deep-subtle">
-                        {formatPeriod(w)}
-                      </span>
-                      <Link href={`/works/${w.slug}/`} className="text-on-deep-muted underline-offset-4 hover:underline">
-                        {w.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={`/works/?field=${area.key}`}
-                  className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold"
-                  style={{ color: area.tone }}
-                >
-                  전체 보기 <span aria-hidden>→</span>
+/**
+ * 펼침 상세 — 네 덩어리 전부 **저장소 정본에서 센 값**이다.
+ * 주요 고객사 = works 의 client, 기술 스택 = showcase 의 stack, 이력 = works, 포트폴리오 = showcase 의 shots.
+ * ⚠ 시안에는 기술 스택이 GPS/WiFi·LBS SDK·Push Server·Java·Spring·Android/iOS 로 적혀 있었지만
+ *   그건 근거가 없다. 여기서는 사례에 실제로 적힌 stack 만 모은다 — 없으면 그 줄이 통째로 빠진다.
+ */
+function AreaDetail({ area, onClose }: { area: Area; onClose: () => void }) {
+  const isField = area.key !== 'solution'
+  const solutionSlugs = new Set(SOLUTIONS.flatMap((s) => s.works))
+
+  const works = sortByStart(
+    isField ? WORKS.filter((w) => w.field === area.key) : WORKS.filter((w) => solutionSlugs.has(w.slug)),
+  )
+  const cases = isField
+    ? SHOWCASE.filter((c) => c.field === area.key)
+    : SHOWCASE.filter((c) => c.work && solutionSlugs.has(c.work))
+
+  const clients = [...new Set(works.map((w) => w.client).filter(Boolean))].slice(0, 8)
+  const stack = [...new Set(cases.flatMap((c) => c.stack ?? []))]
+  /**
+   * ⚠ 폰 목업(`plain`)을 16:7 로 자르면 **폰 윗부분만** 남아 무슨 화면인지 안 읽힌다.
+   *   가로로 잘려도 괜찮은 브라우저 캡처(`web`)를 먼저 고르고, 없을 때만 나머지를 쓴다.
+   */
+  const shots = [...cases.flatMap((c) => c.shots.map((s) => ({ ...s, caption: c.short })))]
+    .sort((a, b) => Number(b.kind === 'web') - Number(a.kind === 'web'))
+    .slice(0, 3)
+
+  return (
+    <div className="mt-5 overflow-hidden rounded-[14px] border border-white/8 bg-white/[0.03]">
+      <div className="flex items-start justify-between gap-4 border-b border-white/8 px-7 py-6 pc:px-10">
+        <div>
+          <p className="font-display text-[11.5px] font-bold tracking-[0.12em]" style={{ color: area.tone }}>
+            {area.no} · {area.en}
+          </p>
+          <h4 className="mt-1.5 text-[21px] font-bold tracking-[-0.015em]">{area.ko} — 상세 현황</h4>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="상세 닫기"
+          className="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-[13px] text-on-deep-muted transition-colors hover:text-on-deep"
+        >
+          닫기 ✕
+        </button>
+      </div>
+
+      <div className="grid gap-9 px-7 py-8 pc:grid-cols-2 pc:px-10 pc:py-9">
+        <div>
+          {clients.length > 0 && (
+            <>
+              <p className="font-display text-[11.5px] font-bold tracking-[0.12em] text-on-deep-subtle">주요 고객사</p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {clients.map((c) => (
+                  <li key={c} className="rounded-full border border-white/10 px-3 py-1.5 text-[13px] text-on-deep-muted">
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {stack.length > 0 && (
+            <>
+              <p className="mt-7 font-display text-[11.5px] font-bold tracking-[0.12em] text-on-deep-subtle">
+                기술 스택
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {stack.map((t) => (
+                  <li
+                    key={t}
+                    className="rounded-full border px-3 py-1.5 text-[13px]"
+                    style={{ borderColor: `color-mix(in oklab, ${area.tone} 32%, transparent)`, color: area.tone }}
+                  >
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          <p className="mt-7 font-display text-[11.5px] font-bold tracking-[0.12em] text-on-deep-subtle">
+            프로젝트 이력
+          </p>
+          <ul className="mt-3 space-y-2.5">
+            {works.slice(0, 8).map((w) => (
+              <li key={w.slug} className="flex gap-3 text-[14px]">
+                <span className="w-[104px] shrink-0 font-display tabular-nums text-on-deep-subtle">
+                  {w.ongoing ? '운영중' : formatPeriod(w)}
+                </span>
+                <Link href={`/works/${w.slug}/`} className="text-on-deep-muted underline-offset-4 hover:underline">
+                  {w.title}
                 </Link>
-              </div>
-            )}
-          </>
-        ) : (
-          <a
-            href="#solutions"
-            className="mt-6 inline-flex items-center gap-1.5 text-[13px] font-semibold"
+              </li>
+            ))}
+          </ul>
+          <Link
+            href={isField ? `/works/?field=${area.key}` : '/works/'}
+            className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold"
             style={{ color: area.tone }}
           >
-            솔루션 3종 보기 <span aria-hidden>→</span>
-          </a>
+            전체 {works.length}건 보기 <span aria-hidden>→</span>
+          </Link>
+        </div>
+
+        {shots.length > 0 && (
+          <div>
+            <p className="font-display text-[11.5px] font-bold tracking-[0.12em] text-on-deep-subtle">포트폴리오</p>
+            <ul className="mt-3 space-y-3">
+              {shots.map((s) => (
+                <li key={s.src} className="relative overflow-hidden rounded-[12px] border border-white/8 bg-deep-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- 정적 내보내기라 next/image 최적화를 못 쓴다 */}
+                  <img
+                    src={s.src}
+                    alt={s.alt}
+                    {...imgSize(s.src)}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[16/7] w-full object-cover object-top opacity-85"
+                  />
+                  <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0b1020] to-transparent px-4 pb-3 pt-8 text-[13px] font-medium text-on-deep">
+                    {s.caption}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
     </div>
@@ -223,20 +318,30 @@ function AreaCard({ area }: { area: Area }) {
 }
 
 export function BusinessAreas() {
+  /** 한 번에 하나만 연다 — 넷을 다 펼치면 이 구간만 화면 여섯 개 길이가 된다 */
+  const [openKey, setOpenKey] = useState<Area['key'] | null>(null)
+  const openArea = AREAS.find((a) => a.key === openKey) ?? null
+
   return (
     <Section id="business" tone="deep">
       <SectionHead
         eyebrow="BUSINESS AREAS"
         title="핵심 사업 영역"
-        lede="금융 · 차량 · 통신 세 축을 각 사업팀이 맡아 구축부터 운영까지 책임집니다. 카드를 펼치면 수행한 사업 이력을 보실 수 있습니다."
+        lede="금융 · 차량 · 통신 세 축을 각 사업팀이 맡아 구축부터 운영까지 책임집니다. 카드를 펼치면 고객사와 수행 이력, 실제 구축 화면을 보실 수 있습니다."
       />
       <div className="mt-14 grid gap-5 pc:grid-cols-2">
         {AREAS.map((a, i) => (
           <Rise key={a.key} delay={i * 70}>
-            <AreaCard area={a} />
+            <AreaCard
+              area={a}
+              open={openKey === a.key}
+              onToggle={() => setOpenKey((k) => (k === a.key ? null : a.key))}
+            />
           </Rise>
         ))}
       </div>
+
+      {openArea && <AreaDetail area={openArea} onClose={() => setOpenKey(null)} />}
     </Section>
   )
 }
