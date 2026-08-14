@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { Rise } from '@/components/Rise'
+import { SOLUTION_MOCKUP } from '@/components/home/SolutionMockups'
 import { Section, SectionHead } from '@/components/ui/Section'
 import { formatPeriod, sortByStart } from '@/components/pages/work-utils'
 import { FIELD_META } from '@/content/fields'
@@ -194,14 +195,9 @@ function AreaCard({ area, open, onToggle }: { area: Area; open: boolean; onToggl
  */
 function AreaDetail({ area, onClose }: { area: Area; onClose: () => void }) {
   const isField = area.key !== 'solution'
-  const solutionSlugs = new Set(SOLUTIONS.flatMap((s) => s.works))
 
-  const works = sortByStart(
-    isField ? WORKS.filter((w) => w.field === area.key) : WORKS.filter((w) => solutionSlugs.has(w.slug)),
-  )
-  const cases = isField
-    ? SHOWCASE.filter((c) => c.field === area.key)
-    : SHOWCASE.filter((c) => c.work && solutionSlugs.has(c.work))
+  const works = sortByStart(isField ? WORKS.filter((w) => w.field === area.key) : [])
+  const cases = isField ? SHOWCASE.filter((c) => c.field === area.key) : []
 
   const clients = [...new Set(works.map((w) => w.client).filter(Boolean))].slice(0, 8)
   const stack = [...new Set(cases.flatMap((c) => c.stack ?? []))]
@@ -232,6 +228,61 @@ function AreaDetail({ area, onClose }: { area: Area; onClose: () => void }) {
         </button>
       </div>
 
+      {/* ⚠ 04 자체 솔루션은 **다른 것을 보여 준다.** 여기에 KT·SKT 구축 사업을 "프로젝트 이력"으로
+          늘어놓았더니 그 사업들이 우리 솔루션인 것처럼 읽혔다(사용자 지적 2026-08-14).
+          구축 사업은 고객사 것이고, 우리 솔루션은 따로다. 판 구조(좌 목록 / 우 화면)는 시안 그대로 두고
+          내용만 솔루션으로 바꾼다. */}
+      {!isField ? (
+        <div className="grid gap-9 px-7 py-8 pc:grid-cols-2 pc:px-10 pc:py-9">
+          <div>
+            <p className="font-display text-[11.5px] font-bold tracking-[0.12em] text-on-deep-subtle">
+              자체 솔루션 {SOLUTIONS.length}종
+            </p>
+            <ul className="mt-4 space-y-3.5">
+              {SOLUTIONS.map((s) => (
+                <li key={s.key} className="rounded-[12px] border border-white/8 bg-white/[0.03] px-4 py-3.5">
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <p className="font-display text-[16px] font-extrabold tracking-[-0.02em]">{s.name}</p>
+                    <p className="text-[13px] text-on-deep-subtle">{s.tagline}</p>
+                  </div>
+                  {/* 근거 — 숫자는 정본에서 센다 */}
+                  <p className="mt-2 text-[12.5px] text-on-deep-muted">
+                    {[
+                      s.patents?.length ? `등록 특허 ${s.patents.length}건` : '자사 직접 개발·운영',
+                      `적용 사업 ${s.works.length}건`,
+                    ].join(' · ')}
+                  </p>
+                </li>
+              ))}
+            </ul>
+            <a
+              href="#solutions"
+              className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold"
+              style={{ color: area.tone }}
+            >
+              솔루션 자세히 보기 <span aria-hidden>→</span>
+            </a>
+          </div>
+
+          <div>
+            <p className="font-display text-[11.5px] font-bold tracking-[0.12em] text-on-deep-subtle">화면</p>
+            <ul className="mt-4 space-y-3">
+              {SOLUTIONS.map((s) => {
+                const m = SOLUTION_MOCKUP[s.key]
+                if (!m) return null
+                return (
+                  <li key={s.key} className="overflow-hidden rounded-[12px] border border-white/8">
+                    <div style={{ background: m.bg }}>
+                      <m.C />
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+            <p className="mt-2 text-[12px] text-on-deep-subtle">화면 예시 — 실제 운영 수치가 아닙니다</p>
+          </div>
+        </div>
+      ) : (
       <div className="grid gap-9 px-7 py-8 pc:grid-cols-2 pc:px-10 pc:py-9">
         <div>
           {clients.length > 0 && (
@@ -314,6 +365,7 @@ function AreaDetail({ area, onClose }: { area: Area; onClose: () => void }) {
           </div>
         )}
       </div>
+      )}
     </div>
   )
 }

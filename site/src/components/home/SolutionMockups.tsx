@@ -364,3 +364,18 @@ export function SmartRentalMockup() {
     </svg>
   )
 }
+
+/**
+ * 솔루션 key → 그림과 **그 그림의 바탕색**.
+ *
+ * 바탕색을 따로 들고 다니는 이유: 판을 이 색으로 칠해 두면 그림이 세로로 남기는 자리(레터박스)가
+ * 그림과 이어져 보여서 칸이 통째로 화면처럼 찬다.
+ * ⚠ 각 SVG 안 바탕 사각형(`<rect width="560" height="380">`)의 fill 과 **같은 값**이어야 한다.
+ *   어긋나면 그림 위아래에 띠가 생긴다.
+ */
+export const SOLUTION_MOCKUP: Record<string, { C: () => React.JSX.Element; bg: string }> = {
+  actrack: { C: AcTrackMockup, bg: '#0a1128' },
+  cacago: { C: CacagoMockup, bg: '#0c0a1a' },
+  'smart-zone-cast': { C: SmartZoneMockup, bg: '#061812' },
+  'smart-rental': { C: SmartRentalMockup, bg: '#06121a' },
+}

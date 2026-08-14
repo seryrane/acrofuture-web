@@ -5,12 +5,7 @@ import { useState } from 'react'
 
 import { Rise } from '@/components/Rise'
 import { Section, SectionHead } from '@/components/ui/Section'
-import {
-  AcTrackMockup,
-  CacagoMockup,
-  SmartRentalMockup,
-  SmartZoneMockup,
-} from '@/components/home/SolutionMockups'
+import { SOLUTION_MOCKUP } from '@/components/home/SolutionMockups'
 import { CREDENTIALS } from '@/content/company'
 import { SOLUTIONS, type Solution } from '@/content/solutions'
 import { WORKS } from '@/content/works'
@@ -37,19 +32,6 @@ const TONE: Record<Solution['tone'], string> = {
   cyan: 'var(--color-tone-lbs)',
 }
 
-/**
- * 시안(Version 10)에서 옮겨 온 대시보드 그림. Smart Rental 만 같은 화법으로 새로 그렸다.
- *
- * `bg` 는 각 SVG 안 바탕 사각형과 **같은 색**이다. 판을 이 색으로 칠해 두면 그림이 세로로 남는
- * 자리(레터박스)가 그림과 이어져 보여서 오른쪽이 통째로 화면처럼 꽉 찬다.
- * ⚠ 색이 어긋나면 그림 위아래에 띠가 생긴다. SVG 의 바탕 색을 바꾸면 여기도 같이 바꾼다.
- */
-const MOCKUP: Record<string, { C: () => React.JSX.Element; bg: string }> = {
-  actrack: { C: AcTrackMockup, bg: '#0a1128' },
-  cacago: { C: CacagoMockup, bg: '#0c0a1a' },
-  'smart-zone-cast': { C: SmartZoneMockup, bg: '#061812' },
-  'smart-rental': { C: SmartRentalMockup, bg: '#06121a' },
-}
 
 const WORK_BY_SLUG = new Map(WORKS.map((w) => [w.slug, w]))
 const PATENT_BY_NO = new Map(CREDENTIALS.patents.map((p) => [p.no, p]))
@@ -104,7 +86,7 @@ export function SolutionsBand() {
   const s = SOLUTIONS[active]
   const color = TONE[s.tone]
   const ws = worksOf(s)
-  const mock = MOCKUP[s.key]
+  const mock = SOLUTION_MOCKUP[s.key]
 
   return (
     <Section id="solutions" tone="light">
