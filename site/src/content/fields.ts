@@ -29,6 +29,10 @@ export interface FieldMeta {
   team: string
   /** 한 줄 설명 */
   blurb: string
+  /** 사업분야 카드와 사례 상세가 **함께** 쓰는 설명.
+   *  ⚠ 두 화면에 같은 문장을 따로 적어 두면 한쪽만 고쳐져서 갈라진다(라벨에서 이미 겪은 일).
+   *  없는 분야는 사례 상세가 company.ts 의 lede 로 떨어진다. */
+  desc?: string
   /** 구분용 색 — 의미가 다른 게 아니라 눈으로 가르기 위한 것이다 */
   tone: string
 }
@@ -40,6 +44,7 @@ export const FIELD_META: Record<WorkField, FieldMeta> = {
     en: 'DIGITAL FINANCE',
     team: '디지털금융사업팀',
     blurb: '은행·보험·캐피탈의 고객채널과 내부 시스템',
+    desc: '은행·보험·캐피탈의 고객채널과 내부 시스템을 구축하고 지속적으로 운영합니다. 특히 대출 신청처럼 작은 불편 하나가 고객 이탈로 이어질 수 있는 핵심 금융 서비스를 안정적으로 관리하고 개선합니다.',
     tone: 'var(--color-tone-finance)',
   },
   mobility: {

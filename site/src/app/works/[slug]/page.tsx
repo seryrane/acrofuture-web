@@ -14,7 +14,7 @@ import { WORKS, type Work, type WorkField } from '@/content/works'
  *  etc 로 분류된 사업(교육·공공·유통 등, 15건)엔 재사용할 lede 가 없어 여기서 한 줄을 따로 둔다 —
  *  다만 새 주장을 지어내지 않고 "세 축 밖"이라는 사실만 말한다. */
 const FIELD_LEDE: Record<WorkField, string> = {
-  finance: FIELDS.find((f) => f.key === 'finance')!.lede,
+  finance: FIELD_META.finance.desc ?? FIELDS.find((f) => f.key === 'finance')!.lede,
   mobility: FIELDS.find((f) => f.key === 'mobility')!.lede,
   lbs: FIELDS.find((f) => f.key === 'lbs')!.lede,
   etc: '세 사업팀의 축 밖에서 고객사의 필요에 맞춰 진행한 사업입니다.',

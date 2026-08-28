@@ -49,7 +49,7 @@ const AREAS: Area[] = [
     ko: FIELD_META.finance.ko,
     en: FIELD_META.finance.en,
     team: FIELD_META.finance.team,
-    desc: '보험과 캐피탈의 고객채널·내부 시스템을 짓고, 끝나면 떠나는 대신 오래 운영합니다. 대출 신청처럼 한 단계만 막혀도 사람이 떠나는 화면을 주로 다룹니다.',
+    desc: FIELD_META.finance.desc!,
     chips: ['모바일·인터넷뱅킹', 'UI/UX 리뉴얼', '오토금융', '에이전트 포털'],
     img: '/media/works/im-capital-web-2.webp',
     imgAlt: 'iM캐피탈 대출 상품 웹사이트',
