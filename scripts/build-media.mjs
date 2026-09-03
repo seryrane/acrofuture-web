@@ -66,22 +66,9 @@ const MAP = {
   'p29_16_1324x736.png': 'cj-thekitchen-1',
   'p29_17_1324x736.png': 'mycar-history-1',
 
-  // ── p31 · KT RTK 정밀측위 / KT EAGLE-EYE 위치관리 플랫폼 ──
-  // ⚠ 두 장 중 어느 쪽이 RTK 인지 쪽 안에서 구분이 안 된다 → 화면에서도 둘을 묶어 부른다
-  'p31_00_2745x1713.png': 'kt-rtk-eagleeye-1',
-  'p31_71_1036x666.png': 'kt-rtk-eagleeye-2',
-
   // ── p32 · KT SMART ZONE CAST / KT 위치정보 품질 관리 2019 ──
-  'p32_33_2329x964.png': 'kt-smart-zone-cast-arch',
   'p32_34_1425x763.png': 'kt-loc-quality-arch',
 
-  // ── p33 · 재난안전통신망 A사업구역 / KT 차세대 WPS ──
-  'p33_27_1425x763.png': 'psnet-wps-1',
-  'p33_90_1546x827.png': 'psnet-wps-2',
-
-  // ── p35 · KT CBS 지오펜싱 OPEN API(2018) / KT 오픈인증플랫폼 OSCA ──
-  'p35_00_1468x865.png': 'kt-geofencing-osca-1',
-  'p35_79_1310x726.png': 'kt-geofencing-osca-2',
 }
 
 /** 굽지 않는 것과 그 이유 — 다음 사람이 "왜 빠졌지?" 하지 않게 남긴다 */
@@ -94,6 +81,14 @@ const SKIP_REASON = {
   'p37_00_3232x930.png': '연락처 쪽 지도',
   'p37_01_1348x659.png': '연락처 쪽 지도',
   '_titles.png': '쪽 제목 모음',
+  // 솔루션사업팀 사례의 아키텍처 구성도 — 방문자에게 보일 것은 **실제로 만든 화면**만 남긴다
+  'p31_00_2745x1713.png': '시스템 구성도(2026-09-03 사용자 결정 — 화면에 싣지 않는다)',
+  'p31_71_1036x666.png': '시스템 구성도(2026-09-03 사용자 결정 — 화면에 싣지 않는다)',
+  'p32_33_2329x964.png': '시스템 구성도(2026-09-03 사용자 결정 — 화면에 싣지 않는다)',
+  'p33_27_1425x763.png': '시스템 구성도(2026-09-03 사용자 결정 — 화면에 싣지 않는다)',
+  'p33_90_1546x827.png': '시스템 구성도(2026-09-03 사용자 결정 — 화면에 싣지 않는다)',
+  'p35_00_1468x865.png': '시스템 구성도(2026-09-03 사용자 결정 — 화면에 싣지 않는다)',
+  'p35_79_1310x726.png': '시스템 구성도(2026-09-03 사용자 결정 — 화면에 싣지 않는다)',
   // p11·p12 는 인증·특허·표창 증서다 — 이미 site/public/media/credentials/ 에 따로 들어가 있다
   'p11_03_456x697.png': '증서(credentials 에 있음)',
   'p11_04_456x697.png': '증서(credentials 에 있음)',
@@ -116,6 +111,7 @@ const MAX_W = 1600
  *   반쯤 걸려 들어온다(2026-08-07 에 실제로 그렇게 나왔고 사용자가 지적했다).
  *   대신 **밝은 화소가 가로로 넓게 이어지는 구간**을 찾는다 — 스크린샷은 밝고 넓고, 설명 판은 어둡다.
  * ⚠ `halves: true` 인 쪽은 위/아래에 사업이 하나씩 있어 반씩 나눠 찾는다.
+ * ⚠ `drop: ['-1']` 은 그 반쪽을 굽지 않는다는 뜻이다.
  */
 const PAGE_CROPS = [
   { page: 16, from: 1050, name: 'autoever-poi-admin' },     // 글로벌 POI Search Admin Portal 2024.01~06
@@ -126,7 +122,8 @@ const PAGE_CROPS = [
   { page: 23, from: 1466, name: 'kt-cbs-geofencing-web' },  // KT CBS 지오펜싱 캠페인/리포트 웹 2015
   { page: 25, from: 1120, name: 'autoever-mapgpt' },        // MAPGPT · 내비3D 픽업서비스 2024.09~2025.01
   { page: 26, from: 1050, name: 'im-capital-mobile' },      // iM캐피탈 모바일 리뉴얼 2024.03~12
-  { page: 34, from: 0, name: 'kt-lbs-smart-rental', halves: true }, // KT 통합 LBS(위) / SMART RENTAL(아래)
+  // ⚠ 위쪽(KT 통합 LBS 구성도)은 굽지 않는다 — 아래쪽 SMART RENTAL 관리자 대시보드만 쓴다(2026-09-03)
+  { page: 34, from: 0, name: 'kt-lbs-smart-rental', halves: true, drop: ['-1'] },
 ]
 
 /**
@@ -249,7 +246,7 @@ async function main() {
   }
 
   // 쪽 렌더에서 화면만 잘라 쓰는 것들 — PDF 안에 이미지 객체가 없어 추출이 안 되는 9쪽
-  for (const { page, from, name, halves } of PAGE_CROPS) {
+  for (const { page, from, name, halves, drop = [] } of PAGE_CROPS) {
     const src = path.join(ROOT, 'research', 'pages', `p${page}.png`)
     const ranges = halves
       ? [
@@ -258,7 +255,9 @@ async function main() {
         ]
       : [{ suffix: '', top: 0, bot: PAGE_H }]
 
-    for (const { suffix, top, bot } of ranges) {
+    // 반쪽 중 안 쓰는 쪽은 아예 굽지 않는다 — 쓰지 않는 파일이 public 에 남지 않게 한다
+
+    for (const { suffix, top, bot } of ranges.filter((r) => !drop.includes(r.suffix))) {
       // 반씩 나눠 찾을 때는 그 반쪽 안에서 가장 넓은 밝은 덩어리를 찾는다(x 는 왼쪽 끝부터)
       const box = await findScreenBox(src, halves ? 0 : from, top, bot)
       const dst = path.join(OUT, `${name}${suffix}.webp`)

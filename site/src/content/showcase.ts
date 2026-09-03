@@ -243,11 +243,8 @@ const ALL_SHOWCASE: ShowcaseCase[] = [
     desc: 'GPS 오차를 센티미터 단위까지 줄이는 보정 신호(RTK)를 전국에 뿌리는 플랫폼과, 그 위에서 위치를 관리하는 엔진입니다. 측위는 재는 일 자체가 서비스라, 정확도만큼 끊기지 않는 것이 중요합니다.',
     source: '소개서 p31',
     work: 'kt-rtk-precision-positioning-platform',
-    shots: [
-      // ⚠ 쪽 안에서 두 플랫폼이 나란히 실려 있고 어느 그림이 어느 쪽인지 표기가 없다 → 묶어서 부른다
-      { src: '/media/works/kt-rtk-eagleeye-1.webp', alt: 'RTK 정밀측위 · EAGLE-EYE 플랫폼 구성도 (1/2)', kind: 'plain' },
-      { src: '/media/works/kt-rtk-eagleeye-2.webp', alt: 'RTK 정밀측위 · EAGLE-EYE 플랫폼 구성도 (2/2)', kind: 'plain' },
-    ],
+    // ⚠ 시스템 구성도라 뺐다 — 방문자에게 보이는 것은 **실제로 만든 화면**만 남긴다(2026-09-03 사용자 결정)
+    shots: [],
   },
   {
     key: 'kt-szc',
@@ -260,8 +257,8 @@ const ALL_SHOWCASE: ShowcaseCase[] = [
     source: '소개서 p32',
     work: 'kt-location-info-quality-management-system',
     shots: [
-      { src: '/media/works/kt-smart-zone-cast-arch.webp', alt: 'SMART ZONE CAST 위치기반 메시징 구성도', kind: 'plain' },
-      { src: '/media/works/kt-loc-quality-arch.webp', alt: '위치정보 품질 관리 시스템 구성도', kind: 'plain' },
+      // ⚠ 파일 이름과 달리 구성도가 아니라 **요약 슬라이드**다(실물 확인 2026-09-03). 이름은 굽는 표를 따라 그대로 둔다
+      { src: '/media/works/kt-loc-quality-arch.webp', alt: '위치정보 품질 관리 — 분석·모니터링·알고리즘 적용', kind: 'plain' },
       { src: '/media/works/kt-szc-service.webp', alt: 'kt Smart Zone Cast 서비스 화면', kind: 'slide' },
     ],
   },
@@ -275,10 +272,8 @@ const ALL_SHOWCASE: ShowcaseCase[] = [
     desc: '경찰·소방·해경·군·의료 등 8대 분야 333개 기관, 24만 명이 쓰는 재난안전통신망의 위치 기능을 맡았습니다. 3년을 지어 7년째 운영 중입니다 — 재난망은 평소에 조용하다가 필요한 순간에만 확인되는 시스템이라, 오래 지키는 일이 곧 실력입니다.',
     source: '소개서 p33',
     work: 'disaster-safety-network-zone-a-lbs-solution',
-    shots: [
-      { src: '/media/works/psnet-wps-1.webp', alt: '재난안전통신망 LBS · 차세대 WPS 구성도 (1/2)', kind: 'plain' },
-      { src: '/media/works/psnet-wps-2.webp', alt: '재난안전통신망 LBS · 차세대 WPS 구성도 (2/2)', kind: 'plain' },
-    ],
+    // ⚠ 시스템 구성도라 뺐다 — 방문자에게 보이는 것은 **실제로 만든 화면**만 남긴다(2026-09-03 사용자 결정)
+    shots: [],
   },
   {
     key: 'kt-geofencing',
@@ -290,10 +285,8 @@ const ALL_SHOWCASE: ShowcaseCase[] = [
     desc: '지오펜싱 기능을 바깥에서도 쓸 수 있게 OPEN API 로 열었고, 소셜 로그인(Facebook·Google·kakao·NAVER)을 묶는 인증 플랫폼을 함께 구축했습니다.',
     source: '소개서 p35',
     work: 'cbs-geofencing-platform-upgrade',
-    shots: [
-      { src: '/media/works/kt-geofencing-osca-1.webp', alt: 'CBS 지오펜싱 OPEN API · OSCA 구성도 (1/2)', kind: 'plain' },
-      { src: '/media/works/kt-geofencing-osca-2.webp', alt: 'CBS 지오펜싱 OPEN API · OSCA 구성도 (2/2)', kind: 'plain' },
-    ],
+    // ⚠ 시스템 구성도라 뺐다 — 방문자에게 보이는 것은 **실제로 만든 화면**만 남긴다(2026-09-03 사용자 결정)
+    shots: [],
   },
   {
     key: 'skt-zone-cast',
@@ -334,7 +327,6 @@ const ALL_SHOWCASE: ShowcaseCase[] = [
     source: '소개서 p34',
     work: 'smart-rental-solution',
     shots: [
-      { src: '/media/works/kt-lbs-smart-rental-1.webp', alt: 'KT 통합 LBS 플랫폼 구성도', kind: 'slide' },
       { src: '/media/works/kt-lbs-smart-rental-2.webp', alt: 'SMART RENTAL 관리자 대시보드', kind: 'slide' },
     ],
   },
@@ -385,10 +377,19 @@ function baked(src: string): boolean {
   return BAKED_WORK_MEDIA.has(src.replace('/media/works/', '').replace('.webp', ''))
 }
 
-export const SHOWCASE: ShowcaseCase[] = ALL_SHOWCASE.map((c) => ({
+/**
+ * 그림이 하나도 없는 사례도 **여기에는 남는다.** 사례 상세의 사업 설명(`desc`)이 이 표에서 온다.
+ * ⚠ 2026-09-03 에 솔루션사업팀 구성도를 걷어내면서 세 건(RTK·재난안전통신망·지오펜싱)의 `shots` 가 비었다.
+ *   예전처럼 "그림 0 이면 통째로 버림"을 그대로 두면 **상세에서 사업 설명까지 같이 사라진다** —
+ *   2026-08-07 에 지적받은 그 증상이다(사업 소개가 홈에만 있고 상세엔 없음).
+ */
+export const SHOWCASE_ALL: ShowcaseCase[] = ALL_SHOWCASE.map((c) => ({
   ...c,
   shots: c.shots.filter((s) => baked(s.src)),
-})).filter((c) => c.shots.length > 0)
+}))
+
+/** 그림이 남아 있는 사례만 — **그림을 그리는 화면**(구축 화면 구간·사업분야 펼침·사례 목록)이 쓴다 */
+export const SHOWCASE: ShowcaseCase[] = SHOWCASE_ALL.filter((c) => c.shots.length > 0)
 
 /** 캡처 장수 — 화면이 "N장" 이라고 말할 때 여기서 센다 */
 export const SHOWCASE_SHOT_COUNT = SHOWCASE.reduce((n, c) => n + c.shots.length, 0)

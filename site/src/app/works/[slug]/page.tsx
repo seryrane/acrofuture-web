@@ -6,7 +6,7 @@ import { FieldArt } from '@/components/FieldArt'
 import { FIELDS } from '@/content/company'
 import { FIELD_LABEL, FIELD_META } from '@/content/fields'
 import { imgSize } from '@/content/media-manifest'
-import { SHOWCASE } from '@/content/showcase'
+import { SHOWCASE_ALL } from '@/content/showcase'
 import { WORKS, type Work, type WorkField } from '@/content/works'
 
 
@@ -81,8 +81,10 @@ export default async function WorkDetailPage({
 
   const roles = extractRoles(work.title)
 
-  // 이 사업의 실제 화면 — 회사 소개서 포트폴리오에 캡처가 남아 있는 건만 있다
-  const shots = SHOWCASE.find((c) => c.work === work.slug)
+  // 이 사업의 사례 항목 — 설명과 실제 화면이 여기서 온다.
+  // ⚠ 그림이 한 장도 없는 건까지 찾아야 한다(SHOWCASE 가 아니라 SHOWCASE_ALL). 구성도를 걷어낸 뒤
+  //   그림이 0 장이 된 사업이 있는데, 그렇다고 사업 설명까지 사라지면 안 된다.
+  const shots = SHOWCASE_ALL.find((c) => c.work === work.slug)
 
   // ② 같은 고객사의 다른 사업 — 고객사가 빈 값이면 비교할 게 없어 비운다
   const sameClient = work.client ? WORKS.filter((w) => w.client === work.client && w.slug !== work.slug) : []
@@ -142,7 +144,7 @@ export default async function WorkDetailPage({
         </div>
 
         {/* 실제 화면 — 있는 사업에만 나온다. 없는 사업에 자리표시자를 두지 않는다 */}
-        {shots && (
+        {shots && shots.shots.length > 0 && (
           <section className="border-t border-white/10 py-12">
             <h2 className="text-[19px] font-bold text-on-deep">실제 구축 화면</h2>
             {/* ⚠ 출처(소개서 pNN)를 화면에 쓰지 않는다 — 방문자에게는 뜻이 없는 말이다 */}
