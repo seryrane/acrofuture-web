@@ -1,0 +1,30 @@
+.wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-block: var(--s-5);
+}
+
+.num {
+  color: var(--fix);
+  transition: opacity 300ms var(--ease-out);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* 입자가 모이는 동안 숫자는 숨기고, 모인 뒤 300ms 에 나타난다 */
+.wrap[data-state="pending"] .num {
+  opacity: 0;
+}
+
+.wrap[data-state="done"] .canvas {
+  opacity: 0.25;
+}

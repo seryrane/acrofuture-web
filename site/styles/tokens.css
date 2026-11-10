@@ -1,0 +1,388 @@
+/* 디자인 토큰(3판): DESIGN.md 3장 표를 그대로 옮긴다. 값은 이 파일에서만 바꾼다.
+   구조: 원천 색(--c-*) → 범위가 쓰는 토큰(--paper, --ink …)을 고른다.
+   범위: 청사진 bp(기본 테마의 도면 면, :root) · 종이 paper(밝은 테마의 도면 면) · 심야 night(신호 면, 두 테마 공통) · 화면 screen(화면 예시 안, 고정).
+   기본 테마는 deep 이다. OS 의 prefers-color-scheme 은 따르지 않는다(DESIGN 2.1). 밝은 테마는 :root[data-theme="light"] 에서 도면 범위만 바꾼다. */
+
+:root {
+  /* 깊이(피드백 4차 7): 층 분리 그림자. 가까운 판은 짧고 진한 그림자 + 먼 판은 길고 옅은 그림자, 윗가장자리 빛 한 줄 */
+  --depth-1: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 10px 22px -14px rgba(0, 0, 0, 0.65);
+  --depth-2: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 2px 4px rgba(0, 0, 0, 0.25), 0 24px 48px -20px rgba(0, 0, 0, 0.7);
+  /* ── 원천 색(DESIGN 3.1) ── */
+  --c-deep: #070c1a;
+  --c-deep-2: #0c1225;
+  --c-deep-3: #111a33;
+  --c-mist: #f5f7fb;
+  --c-paper: #ffffff;
+  --c-on-deep: #eef1f8;
+  --c-on-deep-muted: #9aa7c2;
+  --c-on-deep-subtle: #6d7c9c;
+  --c-deep-meta: #7a89a9;
+  --c-ink: #0b1220;
+  --c-ink-muted: #4a5568;
+  --c-ink-meta: #656e7c;
+  --c-rule: #e3e8f0;
+  --c-blue: #4472f5;
+  --c-action: #3a6bf4;
+  --c-action-hover: #2f5de0;
+  --c-blue-hi: #6f92ff;
+  --c-blue-deep: #2c53cc;
+  --c-brand-blue: #5b8cff;
+  --c-leaf: #a7e04b;
+  --c-leaf-mark: #6b9d1b;
+  --c-fin: #5b8cff;
+  --c-mob: #9a86f7;
+  --c-lbs: #3fc0e6;
+  --c-etc: #4bd4a0;
+  --c-fin-ink: #2c53cc;
+  --c-mob-ink: #7054f4;
+  --c-lbs-ink: #147b99;
+  --c-etc-ink: #1e7f5a;
+  --c-warn: #f2b441;
+
+  /* ── 도면 면 원천(기본 = 청사진 bp) ── */
+  --d-paper: var(--c-deep-3);
+  --d-raised: #182139;
+  --d-sunk: var(--c-deep-2);
+  --d-ink: var(--c-on-deep);
+  --d-ink-2: var(--c-on-deep-muted);
+  --d-ink-3: var(--c-deep-meta);
+  --d-rule: rgba(255, 255, 255, 0.08);
+  --d-grid: #18223f;
+  --d-grid-major: #223158;
+  --d-fix: var(--c-brand-blue);
+  --d-fix-core: var(--c-leaf);
+  --d-fix-ink: var(--c-blue-hi);
+  --d-card-bg: #182139;
+  --d-card-border: rgba(255, 255, 255, 0.08);
+  --d-chip-bg: rgba(255, 255, 255, 0.05);
+  --d-header-bg: var(--c-deep-3);
+  --d-wm-blue: var(--c-brand-blue);
+  --d-wm-leaf: var(--c-leaf);
+  --d-selection: #22386e;
+  --d-scroll-thumb: #56647f;
+  --d-ring-1: #456ac2;
+  --d-ring-2: #324d8f;
+  --d-ring-3: #243666;
+  /* 분야 색: 어두운 도면에서는 원색, 종이에서는 -ink */
+  --d-fin: var(--c-fin);
+  --d-mob: var(--c-mob);
+  --d-lbs: var(--c-lbs);
+  --d-etc: var(--c-etc);
+
+  /* ── 신호 면 원천(night, 두 테마 공통) ── */
+  --n-bg: var(--c-deep);
+  --n-raised: #0e1321;
+  --n-ink: var(--c-on-deep);
+  --n-ink-2: var(--c-on-deep-muted);
+  --n-ink-3: var(--c-deep-meta);
+  --n-cold: var(--c-deep-meta);
+  --n-particle: rgba(80, 90, 110, 0.5);
+  --n-road: #1c2748;
+  --n-grid: #0e1529;
+  --n-grid-major: #152040;
+  --n-signal: var(--c-brand-blue);
+  --n-core: #c9d8ff;
+  --n-glow: rgba(91, 140, 255, 0.45);
+  --n-fix-ink: var(--c-blue-hi);
+  --n-selection: #22386e;
+
+  /* ── 화면 예시 범위(고정, DESIGN 3.2 아래) ── */
+  --s-bg: var(--c-deep-2);
+  --s-ink: var(--c-on-deep);
+  --s-ink-2: var(--c-on-deep-muted);
+  --s-ink-3: var(--c-deep-meta);
+  --s-rule: rgba(255, 255, 255, 0.08);
+  --s-sk-1: #18213a;
+  --s-sk-2: #212d4d;
+  --s-grid: #181e30;
+  --s-panel: rgba(255, 255, 255, 0.03);
+
+  /* 테마별 아이콘·라벨 표시(토글 버튼용): deep 이면 "밝은 화면으로"(해) */
+  --show-when-deep: inline-block;
+  --show-when-light: none;
+
+  /* ── 쓰는 토큰(기본 = 청사진) ── */
+  --paper: var(--d-paper);
+  --raised: var(--d-raised);
+  --sunk: var(--d-sunk);
+  --ink: var(--d-ink);
+  --ink-2: var(--d-ink-2);
+  --ink-3: var(--d-ink-3);
+  --rule: var(--d-rule);
+  --grid: var(--d-grid);
+  --grid-major: var(--d-grid-major);
+  --fix: var(--d-fix);
+  --fix-core: var(--d-fix-core);
+  --fix-ink: var(--d-fix-ink);
+  --action-bg: var(--c-action);
+  --action-bg-hover: var(--c-action-hover);
+  --action-fg: #ffffff;
+  --card-bg: var(--d-card-bg);
+  --card-border: var(--d-card-border);
+  --chip-bg: var(--d-chip-bg);
+  --header-bg: var(--d-header-bg);
+  --wm-blue: var(--d-wm-blue);
+  --wm-leaf: var(--d-wm-leaf);
+  --selection: var(--d-selection);
+  --scroll-thumb: var(--d-scroll-thumb);
+  --fin: var(--d-fin);
+  --mob: var(--d-mob);
+  --lbs: var(--d-lbs);
+  --etc: var(--d-etc);
+  --tone: var(--fix);
+  --tone-ink: var(--fix-ink);
+  --glow: transparent;
+  --surface-dots: none;
+
+  /* 글꼴 */
+  --font-sans: "Pretendard Variable", "Pretendard Fallback", -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-wordmark: "PJS Wordmark", "Pretendard Variable", system-ui, sans-serif;
+  --font-display: "PJS Display", "Pretendard Variable", "Malgun Gothic", system-ui, sans-serif;
+
+  /* 글자 크기(역할별) */
+  --fs-meta: 0.8125rem;
+  --fs-small: 0.9375rem;
+  --fs-body: 1rem;
+  --fs-lead: 1.1875rem;
+  --fs-h3: 1.375rem;
+  --fs-h3-scene: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem);
+  --fs-name: 1.75rem;
+  --fs-h2: clamp(1.75rem, 1.2rem + 2.3vw, 3.25rem);
+  --fs-h1: clamp(2.125rem, 1.2rem + 3.9vw, 4.5rem);
+  --fs-mail: clamp(1.625rem, 0.9rem + 3.2vw, 3.75rem);
+  --fs-year: 1.375rem;
+  --fs-evidence: 1.375rem;
+  --fs-evidence-label: 0.8125rem;
+  --fs-screen-title: 0.8125rem;
+  --fs-screen-xs: 0.75rem;
+  --fs-screen-kpi: 1.375rem;
+  --t-year-xl: clamp(3.5rem, 2rem + 6vw, 7.5rem);
+  --t-step: clamp(2.5rem, 1.5rem + 4vw, 5.5rem);
+  --t-solution: clamp(2.75rem, 1.6rem + 4.2vw, 5.5rem);
+  --t-giant: clamp(10rem, 38vw, 34rem);
+
+  /* 모양(DESIGN 6) */
+  --r-card: 14px;
+  --r-btn: 14px;
+  --r-inner: 10px;
+  --r-chip: 8px;
+  --r-phone: 28px;
+
+  /* 간격: 4px 기반 */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --s-10: 128px;
+  --s-11: 160px;
+
+  /* 레이아웃 */
+  /* 1320 → 1680(대표 2026-11-10 «좌우 공간 여백 최소화», #507): 1920 창에서 좌우 빈 띠 300 → 120px.
+     읽는 글줄은 글 블록마다 max-width(em)로 따로 묶는다(본문 한 줄 약 70자 이하) */
+  --container: 1680px;
+  --gutter: 16px;
+  --grid-gap: 16px;
+  --header-h: 56px;
+  --section-top: var(--s-9);
+  --section-bottom: var(--s-8);
+
+  /* 모션 */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-state: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --d-press: 120ms;
+  --d-state: 200ms;
+  --d-menu: 320ms;
+  --d-scene: 480ms;
+  --d-focal: 800ms;
+  --d-gather: 1400ms;
+
+  color-scheme: dark;
+}
+
+/* 밝은 테마: 도면 면만 종이로(심야 면·화면 범위는 그대로). 레이아웃 값은 바꾸지 않는다 */
+:root[data-theme="light"] {
+  --depth-1: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 10px 22px -14px rgba(20, 34, 70, 0.28);
+  --depth-2: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 2px 4px rgba(20, 34, 70, 0.08), 0 24px 48px -20px rgba(20, 34, 70, 0.3);
+  --d-paper: var(--c-mist);
+  --d-raised: var(--c-paper);
+  --d-sunk: #eef2f8;
+  --d-ink: var(--c-ink);
+  --d-ink-2: var(--c-ink-muted);
+  --d-ink-3: var(--c-ink-meta);
+  --d-rule: var(--c-rule);
+  --d-grid: #e6ebf3;
+  --d-grid-major: #d3dbe8;
+  --d-fix: var(--c-action);
+  --d-fix-core: var(--c-leaf-mark);
+  --d-fix-ink: var(--c-blue-deep);
+  --d-card-bg: var(--c-paper);
+  --d-card-border: var(--c-rule);
+  --d-chip-bg: #eef2f8;
+  --d-header-bg: var(--c-paper);
+  --d-wm-blue: var(--c-blue);
+  --d-wm-leaf: var(--c-leaf-mark);
+  --d-selection: #d6e2ff;
+  --d-scroll-thumb: #7a8494;
+  --d-ring-1: #7295f6;
+  --d-ring-2: #a1b8f8;
+  --d-ring-3: #c6d4f9;
+  --d-fin: var(--c-fin-ink);
+  --d-mob: var(--c-mob-ink);
+  --d-lbs: var(--c-lbs-ink);
+  --d-etc: var(--c-etc-ink);
+  --show-when-deep: none;
+  --show-when-light: inline-block;
+  color-scheme: light;
+}
+
+/* 도면 범위(청사진·종이): 심야 챕터 안에서 열리는 도면 레이어 */
+.day {
+  --paper: var(--d-paper);
+  --raised: var(--d-raised);
+  --sunk: var(--d-sunk);
+  --ink: var(--d-ink);
+  --ink-2: var(--d-ink-2);
+  --ink-3: var(--d-ink-3);
+  --rule: var(--d-rule);
+  --grid: var(--d-grid);
+  --grid-major: var(--d-grid-major);
+  --fix: var(--d-fix);
+  --fix-core: var(--d-fix-core);
+  --fix-ink: var(--d-fix-ink);
+  --card-bg: var(--d-card-bg);
+  --card-border: var(--d-card-border);
+  --chip-bg: var(--d-chip-bg);
+  --header-bg: var(--d-header-bg);
+  --wm-blue: var(--d-wm-blue);
+  --wm-leaf: var(--d-wm-leaf);
+  --selection: var(--d-selection);
+  --fin: var(--d-fin);
+  --mob: var(--d-mob);
+  --lbs: var(--d-lbs);
+  --etc: var(--d-etc);
+  --glow: transparent;
+  --surface-dots: none;
+}
+
+/* 심야 범위: 신호 챕터, 심야 원형 열림 레이어, 심야 챕터 위의 헤더·레일(두 테마 공통) */
+.night,
+:root[data-surface="night"] [data-surface-follow] {
+  --paper: var(--n-bg);
+  --raised: var(--n-raised);
+  --sunk: var(--c-deep-2);
+  --ink: var(--n-ink);
+  --ink-2: var(--n-ink-2);
+  --ink-3: var(--n-ink-3);
+  --rule: rgba(255, 255, 255, 0.08);
+  --grid: var(--n-grid);
+  --grid-major: var(--n-grid-major);
+  --fix: var(--n-signal);
+  --fix-core: var(--c-leaf);
+  --fix-ink: var(--n-fix-ink);
+  --card-bg: var(--n-raised);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --chip-bg: rgba(255, 255, 255, 0.05);
+  --header-bg: var(--n-bg);
+  --wm-blue: var(--c-brand-blue);
+  --wm-leaf: var(--c-leaf);
+  --selection: var(--n-selection);
+  --fin: var(--c-fin);
+  --mob: var(--c-mob);
+  --lbs: var(--c-lbs);
+  --etc: var(--c-etc);
+  --glow: var(--n-glow);
+  color-scheme: dark;
+}
+
+/* 화면 예시 범위: 테마와 무관하게 늘 어두운 화면 */
+.screen {
+  --paper: var(--s-bg);
+  --ink: var(--s-ink);
+  --ink-2: var(--s-ink-2);
+  --ink-3: var(--s-ink-3);
+  --rule: var(--s-rule);
+  --fix: var(--c-brand-blue);
+  --fix-core: var(--c-leaf);
+  --fin: var(--c-fin);
+  --mob: var(--c-mob);
+  --lbs: var(--c-lbs);
+  --etc: var(--c-etc);
+  color: var(--s-ink);
+}
+
+/* 장의 색(DESIGN 3.3): 분야 색 하나가 주인공 */
+.tone-lbs {
+  --tone: var(--lbs);
+  --tone-ink: var(--lbs);
+  --core: #c4eef8;
+}
+.tone-fin {
+  --tone: var(--fin);
+  --tone-ink: var(--fin);
+  --core: #c9d8ff;
+}
+.tone-mob {
+  --tone: var(--mob);
+  --tone-ink: var(--mob);
+  --core: #ddd5fc;
+}
+.tone-etc {
+  --tone: var(--etc);
+  --tone-ink: var(--etc);
+}
+.night.tone-lbs,
+.night .tone-lbs {
+  --glow: rgba(63, 192, 230, 0.45);
+}
+.night.tone-mob,
+.night .tone-mob {
+  --glow: rgba(154, 134, 247, 0.45);
+}
+.night.tone-fin,
+.night .tone-fin {
+  --glow: rgba(91, 140, 255, 0.45);
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--ink);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 24px;
+    --grid-gap: 20px;
+    --header-h: 64px;
+    --section-top: var(--s-10);
+    --section-bottom: var(--s-9);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --gutter: 40px;
+    --grid-gap: 24px;
+    --section-top: var(--s-11);
+    --section-bottom: var(--s-10);
+  }
+}
+
+/* 큰 화면 좌우 여백 48~80px(1280 에서 51 · 1440 에서 58 · 1920 이상은 컨테이너 상한이 먼저 걸림) */
+@media (min-width: 1280px) {
+  :root {
+    --gutter: clamp(48px, 4vw, 80px);
+  }
+}
+
+/* 심야 면은 밝은 테마에서도 어두우므로 깊이 그림자도 어두운 판 기준 */
+.night {
+  --depth-1: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 10px 22px -14px rgba(0, 0, 0, 0.65);
+  --depth-2: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 2px 4px rgba(0, 0, 0, 0.25), 0 24px 48px -20px rgba(0, 0, 0, 0.7);
+}

@@ -1,0 +1,179 @@
+/* 4.5 창 카드 3장. 흐름: 390 세로, ≥768 3칸. 스테이지: 위 레일 위로 떠오른 3칸(막대 자리에서 FLIP) */
+
+.FinanceWindows_wrap {
+  margin: 0;
+  width: 100%;
+  max-width: 760px;
+}
+
+.FinanceWindows_row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-3);
+}
+
+.FinanceWindows_win {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--s-bg);
+  border-color: var(--s-rule);
+  transform-origin: 50% 100%;
+}
+
+.FinanceWindows_head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--s-rule);
+}
+
+.FinanceWindows_name {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--s-ink);
+}
+
+.FinanceWindows_meta {
+  font-size: var(--fs-screen-xs);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--s-ink-3);
+}
+
+.FinanceWindows_body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px 14px;
+}
+
+.FinanceWindows_carSlot {
+  display: block;
+  width: 48px;
+  height: 48px;
+  color: var(--fin);
+}
+
+.FinanceWindows_car {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
+.FinanceWindows_cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.FinanceWindows_cards span,
+.FinanceWindows_table span {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--s-sk-1);
+}
+
+.FinanceWindows_table {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.FinanceWindows_table span {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+}
+
+.FinanceWindows_filters {
+  display: flex;
+  gap: 6px;
+}
+
+.FinanceWindows_filters span {
+  width: 44px;
+  height: 20px;
+  border-radius: 8px;
+  background: var(--s-sk-1);
+  border: 1px solid var(--s-sk-2);
+}
+
+.FinanceWindows_filters .FinanceWindows_filterOn {
+  background: color-mix(in srgb, var(--fin) 22%, var(--s-bg));
+  border-color: var(--fin);
+}
+
+.FinanceWindows_nodes {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+}
+
+.FinanceWindows_cap {
+  margin-top: var(--s-2);
+}
+
+@media (min-width: 768px) {
+  .FinanceWindows_row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ── 스테이지: 위 레일(단위 y 342) 위 24px 에 바닥을 맞춘다 ── */
+html[data-scrub="on"] .FinanceWindows_wrap.FinanceWindows_wrap {
+  position: absolute;
+  left: calc(var(--artL) + 64px);
+  width: calc(var(--artW) - 64px);
+  top: calc(var(--oy) + 558 * var(--u) + 48px);
+  bottom: auto;
+  height: auto;
+  display: block;
+  max-width: none;
+}
+
+html[data-scrub="on"] .FinanceWindows_row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+}
+
+@media (max-height: 820px) {
+  html[data-scrub="on"] .FinanceWindows_table span:nth-child(n + 3),
+  html[data-scrub="on"] .FinanceWindows_cards {
+    display: none;
+  }
+
+  html[data-scrub="on"] .FinanceWindows_nodes {
+    max-height: 60px;
+  }
+}
+
+html[data-scrub="on"] .FinanceWindows_head {
+  padding: 10px 12px 8px;
+}
+
+html[data-scrub="on"] .FinanceWindows_body {
+  padding: 10px 12px 12px;
+  gap: 8px;
+}
+
+html[data-scrub="on"] .FinanceWindows_cards span:nth-child(n + 2),
+html[data-scrub="on"] .FinanceWindows_table span:nth-child(n + 4) {
+  display: none;
+}
+
+html[data-scrub="on"] .FinanceWindows_nodes {
+  max-height: 84px;
+}
+
+html[data-scrub="on"] .FinanceWindows_cap {
+  display: none;
+}

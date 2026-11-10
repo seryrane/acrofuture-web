@@ -1,0 +1,97 @@
+/* 2장 LBS·측위 */
+
+/* 캔버스는 배경 도판 위, 전경 도판(측점·호·판·구역) 아래(문서 순서로 쌓는다) */
+.canvas {
+  z-index: auto !important;
+}
+
+/* 17 은 도판 6~12열 가운데, 두께까지 레일 앞에(글자 폭 약 1.25em) */
+.giant.giant {
+  left: calc(var(--artL) + var(--artW) / 2);
+  font-size: min(var(--t-giant), calc(var(--artW) / 1.4));
+}
+
+.giant {
+  transform: translate(-50%, -50%);
+  color: var(--fix-ink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.labels span {
+  opacity: 0;
+  transform: translateY(-50%);
+}
+
+.labels .right {
+  transform: translate(-100%, -50%);
+}
+
+.labels .center {
+  transform: translate(-50%, -50%);
+}
+
+.svgLabel {
+  font-size: 22px;
+  font-weight: 600;
+  fill: var(--ink-2);
+}
+
+.seventeen {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 12rem;
+}
+
+/* 2.3 RTK 원근 정지 도판 */
+.rtkPlate {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-inner);
+  border: 1px solid var(--card-border);
+  background: var(--n-bg);
+}
+
+.rtkPlate .svgLabel {
+  font-size: 24px;
+}
+
+/* 선이 글자를 지나도 읽히게 바탕색 테두리 */
+.halo text {
+  paint-order: stroke;
+  stroke: var(--n-bg);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}
+
+/* 2.5 중간 수치(장식 사본): 흐름에서는 도판 아래, 스테이지에서는 오른쪽 아래 */
+.mid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-5);
+  margin-top: var(--s-4);
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.mid span {
+  white-space: nowrap;
+}
+
+.midLive {
+  position: absolute;
+  right: calc(100cqw - var(--artR));
+  bottom: var(--s-7);
+  margin: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: min(var(--t-year-xl), 9.5svh);
+  opacity: 0;
+}

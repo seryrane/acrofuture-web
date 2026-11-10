@@ -1,0 +1,48 @@
+/* 헤더 진행 측점: JS 없이 CSS scroll(root) 타임라인으로만 움직인다. 미지원 브라우저에서는 숨김.
+   스크롤바와 같은 정보이므로 모션 감소에서도 유지한다. */
+
+.track {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .track {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3.5px;
+    height: 6px;
+    overflow: clip;
+    overflow-clip-margin: 0;
+    pointer-events: none;
+    contain: layout paint;
+  }
+
+  .mover {
+    width: calc(100% - 6px);
+    height: 6px;
+    transform: translateX(0);
+    animation: progress-move linear both;
+    animation-timeline: scroll(root block);
+    will-change: transform;
+  }
+
+  .dot {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--fix);
+  }
+
+  /* 이동 폭 = 트랙 폭에서 점 폭을 뺀 거리(mover 폭) */
+  @keyframes progress-move {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+}

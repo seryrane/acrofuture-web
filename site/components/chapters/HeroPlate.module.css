@@ -1,0 +1,99 @@
+.plate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  contain: paint;
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.caption {
+  position: absolute;
+  right: calc(50% + 26px);
+  top: calc(50% + 26px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 2px 6px;
+  background: var(--paper);
+  font-size: var(--fs-meta);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.caption span:first-child {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.ring,
+.crossH,
+.crossV {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* 모바일 핵심 연출 ①: 히어로 측점 고정(CSS 1회) */
+@media (prefers-reduced-motion: no-preference) {
+  .ring {
+    animation: ring-in var(--d-focal) var(--ease-out) both;
+  }
+
+  .crossH {
+    animation: cross-h 560ms var(--ease-out) both;
+  }
+
+  .crossV {
+    animation: cross-v 560ms var(--ease-out) both;
+  }
+
+  .fix {
+    animation: fix-in 180ms var(--ease-out) 480ms both;
+  }
+}
+
+@keyframes ring-in {
+  from {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cross-h {
+  from {
+    transform: scaleX(0.2);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes cross-v {
+  from {
+    transform: scaleY(0.2);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fix-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

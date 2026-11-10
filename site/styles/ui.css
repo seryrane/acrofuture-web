@@ -1,0 +1,431 @@
+/* 3판 공통 부품(DESIGN 7): 사업 기록, 근거 칸, 화면 예시 프레임, 폰 도식, 상태 칩, 표제란, DOM 측점.
+   연출 모듈은 data-k 로만 요소를 찾으므로 클래스 이름은 전역으로 둔다. */
+
+/* ── 장면 제목(h3-scene) ── */
+.h3s {
+  font-size: var(--fs-h3-scene);
+  line-height: 1.3;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+/* ── 사업 기록(FieldBook, DESIGN 7.7) ── */
+.fieldbook {
+  width: 100%;
+  max-width: 34em;
+}
+
+.fieldbook-head {
+  padding-bottom: var(--s-2);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+.fieldbook ol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--s-2);
+}
+
+.fieldbook li {
+  display: grid;
+  grid-template-columns: 5.6em minmax(0, 1fr);
+  column-gap: var(--s-3);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.fieldbook-y {
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
+  color: var(--tone-ink);
+  white-space: nowrap;
+}
+
+/* ── 근거 칸(EvidenceCells, DESIGN 7.4): 3칸, 390 에서도 3칸 ── */
+.evidence {
+  display: grid;
+  grid-template-columns: repeat(var(--ev-n, 3), minmax(0, 1fr));
+  gap: var(--s-2);
+  max-width: 30rem;
+}
+
+.ev-cell {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: var(--r-inner);
+  background: color-mix(in srgb, var(--tone) 6%, var(--paper));
+  border: 1px solid color-mix(in srgb, var(--tone) 22%, var(--paper));
+}
+
+.ev-cell dt {
+  font-size: var(--fs-evidence-label);
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.ev-cell dd {
+  font-family: var(--font-display);
+  font-size: var(--fs-evidence);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ── 상태 칩(화면 안, DESIGN 3.7): 색만으로 말하지 않고 글자와 함께 ── */
+.sc {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: var(--r-chip);
+  font-size: var(--fs-screen-xs);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--sc, var(--s-ink-2));
+  background: var(--sc-bg, rgba(255, 255, 255, 0.06));
+  transition:
+    color var(--d-state) var(--ease-state),
+    background-color var(--d-state) var(--ease-state);
+}
+
+.sc::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.sc[data-s="done"] {
+  --sc: #4bd4a0;
+  --sc-bg: #152d36;
+}
+.sc[data-s="move"] {
+  --sc: #3fc0e6;
+  --sc-bg: #132a40;
+}
+.sc[data-s="wait"] {
+  --sc: #5b8cff;
+  --sc-bg: #172344;
+}
+.sc[data-s="warn"] {
+  --sc: #f2b441;
+  --sc-bg: #2c2929;
+}
+.sc[data-s="draft"] {
+  --sc: #9aa7c2;
+  --sc-bg: #1a2238;
+}
+.sc[data-s="off"] {
+  --sc: #7a89a9;
+  --sc-bg: rgba(255, 255, 255, 0.04);
+}
+
+/* ── 화면 예시 프레임(ScreenFrame, DESIGN 7.5) ── */
+.sf {
+  width: 100%;
+  max-width: 760px;
+  margin: 0;
+}
+
+.sf-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--s-bg);
+  border: 1px solid var(--s-rule);
+  container-type: inline-size;
+  box-shadow: var(--depth-2);
+}
+
+/* 스테이지: 화면 예시·폰은 원근 속 판(연출 모듈이 장면 동안 살짝 돌린다). 흐름·감소는 그림자만(가로 넘침 없게) */
+html[data-scrub="on"] .sf-frame,
+html[data-scrub="on"] .phone {
+  transform: perspective(1600px) rotateY(-6deg) rotateX(3deg);
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+}
+
+.sf-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  height: 40px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--s-rule);
+}
+
+.sf-title {
+  font-size: var(--fs-screen-title);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--s-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sf-body {
+  padding: 16px;
+}
+
+.sf-cap {
+  margin-top: var(--s-2);
+}
+
+/* 화면 안 공통 조각 */
+.scr-panel {
+  border-radius: var(--r-inner);
+  background: var(--s-panel);
+  border: 1px solid var(--s-rule);
+  min-width: 0;
+}
+
+.scr-label {
+  font-size: var(--fs-screen-xs);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--s-ink-2);
+}
+
+.scr-xs {
+  font-size: var(--fs-screen-xs);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--s-ink-2);
+}
+
+.scr-meta {
+  font-size: var(--fs-screen-xs);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--s-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.scr-kpi {
+  font-size: var(--fs-screen-kpi);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--s-ink);
+}
+
+.sk {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--s-sk-1);
+}
+
+.sk.strong {
+  background: var(--s-sk-2);
+}
+
+/* ── 폰 도식(PhoneFrame, DESIGN 7.6): 9:19.5, 폭 240(≥1024) / 216 ── */
+.phone-fig {
+  margin: 0;
+  width: 216px;
+  flex: none;
+}
+
+.phone {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 19.5;
+  border-radius: var(--r-phone);
+  border: 1.5px solid var(--ink-2);
+  background: var(--s-bg);
+  overflow: hidden;
+  box-shadow: var(--depth-2), 6px 0 0 -1px color-mix(in srgb, var(--ink-2) 45%, var(--s-bg));
+}
+
+.phone-speaker {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  width: 40px;
+  height: 4px;
+  margin-left: -20px;
+  border-radius: 2px;
+  background: var(--s-sk-2);
+}
+
+.phone-screen {
+  position: absolute;
+  inset: 30px 12px 16px;
+}
+
+.phone-cap {
+  margin-top: var(--s-2);
+  text-align: center;
+}
+
+/* 스테이지: 도판(도로·레일) 위에 놓인 캡션은 바탕판을 깔아 선이 글자를 지나지 않게(자리는 그대로) */
+html[data-scrub="on"] .phone-cap,
+html[data-scrub="on"] .sf-cap {
+  position: relative;
+  width: fit-content;
+  background: var(--paper);
+  box-shadow: 0 0 0 4px var(--paper);
+  border-radius: 4px;
+}
+
+html[data-scrub="on"] .phone-cap {
+  margin-inline: auto;
+}
+
+@media (min-width: 1024px) {
+  .phone-fig {
+    width: 240px;
+  }
+}
+
+/* ── DOM 측점(로고 두 색): 28px 파랑 고리 + 12px 연두 중심점 ── */
+.fixdot {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--fix);
+  background: var(--paper);
+}
+
+.fixdot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--fix-core);
+}
+
+.fixdot.sm {
+  width: 18px;
+  height: 18px;
+}
+
+.fixdot.sm::after {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+}
+
+/* ── 표제란(TitleBlock, DESIGN 7.9) ── */
+.titleblock {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--card-border);
+  border: 1px solid var(--card-border);
+}
+
+.titleblock > li {
+  display: flex;
+}
+
+.titleblock a {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 72px;
+  padding: 14px 16px 14px 34px;
+  background: var(--card-bg);
+  text-decoration: none;
+  transition: background-color var(--d-state) var(--ease-state);
+}
+
+.titleblock a:focus-visible {
+  outline-offset: -3px;
+  border-radius: 0;
+}
+
+.titleblock a::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 21px;
+  width: 8px;
+  height: 8px;
+  background: var(--sq);
+}
+
+.tb-name {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.tb-meta {
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .titleblock a:hover {
+    background: color-mix(in srgb, var(--ink) 3%, var(--card-bg));
+  }
+}
+
+@media (min-width: 768px) {
+  .titleblock {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ── 가로 막대(분야 막대·운영 기간·갈래 건수): 흐름 모드 연출 ④ 막대 차오름(CSS view(), JS 없음) ── */
+.bar-fill {
+  transform-origin: left center;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-scrub="on"]) .bar-fill {
+      animation: bar-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+  }
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

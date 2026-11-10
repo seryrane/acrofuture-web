@@ -1,0 +1,684 @@
+.bento {
+  display: grid;
+  gap: 16px;
+}
+
+/* 큰 카드 공통. --pad 는 폰에서 영상 · 캡처를 화면 폭까지 내보낼 때(아래 «꽉 채움») 쓴다 */
+.big {
+  --pad: 22px;
+  display: grid;
+  gap: 24px;
+  padding: var(--pad);
+  min-width: 0;
+}
+
+.bigMain {
+  min-width: 0;
+}
+
+.name {
+  margin: 12px 0;
+  font-size: clamp(1.9rem, 1.3rem + 2vw, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.sub {
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: var(--fix-ink);
+}
+
+.body {
+  max-width: 34em;
+  color: var(--ink-2);
+}
+
+/* A-Flow 소개 줄: 이름 · 한 줄 · 설명 | 나아지는 것(숫자 없는 결과 문장, 큰 숫자 카드 대신 · #507) */
+.intro {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.intro > div {
+  min-width: 0;
+}
+
+.betterLabel {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.better {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.better > li {
+  min-width: 0;
+  padding: 12px 14px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.55;
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-inner);
+}
+
+/* 잰 값 각주: 숫자와 조건을 같은 크기 글씨로(한 줄 약 70자 이하) */
+.note {
+  max-width: 44em;
+}
+
+/* 영상 + 역할 칸(AflowStage) */
+.stage {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.side {
+  min-width: 0;
+}
+
+.sideLabel {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+/* 역할 탭: 네 칸 단추 묶음(폰 · 옆 칸 2×2, 태블릿 한 줄). 고른 탭은 바탕 · 테두리로 표시 */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.tab {
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-inner);
+  transition:
+    color var(--d-state) var(--ease-state),
+    background-color var(--d-state) var(--ease-state),
+    border-color var(--d-state) var(--ease-state);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--ink);
+  background: var(--sunk);
+  border-color: var(--fix);
+  box-shadow: inset 0 0 0 1px var(--fix);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tab:hover {
+    color: var(--ink);
+  }
+}
+
+/* 첫 선택 뒤부터만 패널을 opacity 로 교체(처음 그려질 때는 제자리) */
+@media (prefers-reduced-motion: no-preference) {
+  [data-fx] .panel {
+    animation: panel-in 160ms var(--ease-out) both;
+  }
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.panel {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panel > div {
+  padding: 14px;
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-inner);
+}
+
+.panel small {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.panel b {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+/* 영상 */
+.video {
+  margin: 0;
+  min-width: 0;
+}
+
+.videoBox {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: var(--r-inner);
+  background: var(--c-deep-2);
+  border: 1px solid var(--rule);
+}
+
+.videoEl {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.playBtn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  /* 포스터 제목 글자(왼쪽 가운데)를 가리지 않게 아이콘은 오른쪽 아래. 누르는 자리는 포스터 전체 */
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px;
+  background: transparent;
+}
+
+.playIcon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--action-bg);
+  color: var(--action-fg);
+  transition: transform var(--d-press) var(--ease-out);
+}
+
+/* 재생 전에 키보드로 역할을 고르면 «디자이너 장부터 재생» */
+.playFrom {
+  align-self: center;
+  margin-top: auto;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--action-fg);
+  background: var(--action-bg);
+  border-radius: 999px;
+}
+
+.playIcon svg {
+  margin-left: 2px;
+  fill: currentColor;
+}
+
+.playBtn:active .playIcon {
+  transform: scale(0.96);
+}
+
+.playBtn:focus-visible {
+  outline-offset: -4px;
+}
+
+.video figcaption {
+  margin-top: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .playBtn:hover .playIcon {
+    background: var(--action-bg-hover);
+  }
+}
+
+/* AI Office(짧은 카드): AI 활용 절의 화면 대조로 되돌아가는 링크 */
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 12px;
+  font-weight: 700;
+  color: var(--fix-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.shot {
+  margin: 0;
+  min-width: 0;
+}
+
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-inner);
+  border: 1px solid var(--rule);
+  background: var(--c-deep-2);
+}
+
+.shot figcaption {
+  margin-top: 8px;
+}
+
+/* 폰: 영상 · 화면 캡처는 화면 폭을 꽉 채운다(카드 안쪽 여백 + 테두리 + 컨테이너 여백만큼 바깥으로) */
+@media (max-width: 767.98px) {
+  .videoBox,
+  .shot img {
+    --bleed: calc(var(--gutter) + var(--pad) + 1px);
+    width: calc(100% + 2 * var(--bleed));
+    max-width: none;
+    margin-inline: calc(-1 * var(--bleed));
+    border-radius: 0;
+    border-inline: 0;
+  }
+}
+
+/* 위치 · 이동 묶음 */
+.moveHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.moveHead > p {
+  max-width: 40em;
+}
+
+.moveTitle {
+  margin-top: 10px;
+  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.75rem);
+  font-weight: 750;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+/* 위치 · 이동 4종(#508): 카드 = 화면 예시(잘라 보임) + 글 + «자세히 보기». 상세 = 큰 화면 + 쓰임새 · 기능 · 특허 · 적용 사업.
+   폰 · 태블릿: 카드 한 줄에 하나, 상세는 그 카드 바로 아래. 1024 이상: 카드 4장 한 줄, 상세는 그 아래 한 줄 전체(li 는 display: contents). */
+.move {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.item {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sm {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  min-width: 0;
+  border-top: 3px solid var(--c);
+}
+
+.sm h4 {
+  margin-top: 16px;
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.sm > p {
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* 카드 안 화면 예시: 위쪽(제목 줄 + 지도)만 보이게 자른다. 크기는 고정 높이라 그려진 뒤 밀림 없음 */
+.thumb {
+  position: relative;
+  height: 196px;
+  overflow: hidden;
+  border-radius: var(--r-inner);
+  pointer-events: none;
+  background: var(--sunk);
+}
+
+.thumb[data-ready] {
+  background: none;
+}
+
+.thumb :global(.sf) {
+  margin: 0;
+}
+
+.thumb :global(.sf-cap) {
+  display: none;
+}
+
+/* 잘린 아래쪽은 흐리게 사라지게(카드 바탕색과 무관하게 mask) */
+.thumb {
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent);
+  mask-image: linear-gradient(to bottom, #000 72%, transparent);
+}
+
+/* «자세히 보기»: 카드 전체가 누르는 자리(::after), 보이는 단추는 카드 아래 */
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  min-height: 44px;
+  margin-top: auto;
+  padding: 10px 2px 0;
+  font-weight: 700;
+  color: var(--fix-ink);
+}
+
+.more::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.more:focus-visible {
+  outline: none;
+}
+
+.more:focus-visible::after {
+  outline: 2px solid var(--fix);
+  outline-offset: 2px;
+}
+
+.moreOpen,
+.moreClose {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.moreClose,
+.more[aria-expanded="true"] .moreOpen {
+  display: none;
+}
+
+.more[aria-expanded="true"] .moreClose {
+  display: inline;
+}
+
+.moreIcon {
+  width: 8px;
+  height: 8px;
+  margin-top: -3px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--d-state) var(--ease-state);
+}
+
+.more[aria-expanded="true"] .moreIcon {
+  margin-top: 3px;
+  transform: rotate(-135deg);
+}
+
+.item[data-open] > .sm {
+  border-color: var(--c);
+  box-shadow: inset 0 0 0 1px var(--c);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sm:hover .moreOpen,
+  .sm:hover .moreClose {
+    text-decoration-thickness: 2px;
+  }
+}
+
+/* 상세 */
+.detail {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  padding: 18px;
+  border-top: 3px solid var(--c);
+}
+
+.detail[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .detail:not([hidden]) {
+    animation: panel-in 200ms var(--ease-out) both;
+  }
+}
+
+.detailShot,
+.detailText {
+  min-width: 0;
+}
+
+.detailShot :global(.sf) {
+  margin: 0;
+}
+
+.detailName {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.detailLead {
+  margin-top: 8px;
+  font-weight: 700;
+  color: var(--fix-ink);
+}
+
+.detailBody {
+  margin-top: 8px;
+  color: var(--ink-2);
+}
+
+.use {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.use > div {
+  display: grid;
+  grid-template-columns: 3em minmax(0, 1fr);
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-inner);
+}
+
+.use dt {
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.mini {
+  margin-top: 18px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.betterOne,
+.plain {
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.betterOne {
+  font-weight: 600;
+}
+
+.support {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.support .tnum {
+  display: inline-block;
+  min-width: 7.5em;
+  color: var(--ink-3);
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 16px;
+  padding: 0 16px;
+  font-weight: 700;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-inner);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .closeBtn:hover {
+    border-color: var(--ink-3);
+  }
+}
+
+@media (min-width: 768px) {
+  .big {
+    --pad: 28px;
+  }
+
+  .tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .panel {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .move {
+    gap: 16px;
+  }
+
+  .sm,
+  .detail {
+    padding: 22px;
+  }
+
+  .thumb {
+    height: 220px;
+  }
+}
+
+/* 큰 화면: 영상이 카드의 주인공(1440 에서 약 920px · 1920 에서 카드 폭의 2/3 이상), 역할 칸은 옆에 영상 높이만큼 */
+@media (min-width: 1024px) {
+  .big {
+    --pad: 36px;
+    --side: clamp(300px, 40vw - 320px, 440px);
+    gap: 32px;
+  }
+
+  .intro {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: end;
+    gap: 24px 48px;
+  }
+
+  .stage {
+    grid-template-columns: minmax(0, 1fr) var(--side);
+    gap: 32px;
+  }
+
+  .side {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .roles {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  /* 옆 칸은 좁으므로 탭 2×2, 패널 세 칸은 위아래로 쌓아 영상 높이를 채운다 */
+  .tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .panel:not([hidden]) {
+    flex: 1;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+  }
+
+  /* AI Office: 글은 좁은 칸(가운데 정렬), 화면 캡처가 나머지 폭 */
+  .office {
+    grid-template-columns: var(--side) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  /* 카드 4장이 첫 줄(자동 배치), 열린 상세는 둘째 줄 전체(명시 배치) → 카드 자리가 비지 않는다 */
+  .move {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .item {
+    display: contents;
+  }
+
+  .detail {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+    gap: 36px;
+    padding: 32px;
+  }
+
+  .thumb {
+    height: 200px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .better {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

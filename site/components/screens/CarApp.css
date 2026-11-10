@@ -1,0 +1,240 @@
+/* 5.5 차량 앱 폰 + 운전연수 매칭 카드. 흐름: 폰(② 화면 정지) 위, 카드 아래(≥768 나란히). 스테이지: 6~12열 */
+
+.CarApp_wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-5);
+}
+
+.CarApp_phone {
+  flex: none;
+}
+
+.CarApp_screens {
+  position: absolute;
+  inset: 0;
+}
+
+.CarApp_scr {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 6px 4px;
+  background: var(--s-bg);
+}
+
+.CarApp_scr:nth-child(1),
+.CarApp_scr:nth-child(3) {
+  visibility: hidden;
+}
+
+.CarApp_title {
+  margin: 2px 0 6px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--s-ink);
+}
+
+.CarApp_carCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 12px;
+  border-radius: var(--r-inner);
+  background: var(--s-sk-1);
+}
+
+.CarApp_gauge {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--s-sk-2);
+  overflow: hidden;
+}
+
+.CarApp_gauge i {
+  display: block;
+  height: 100%;
+  background: var(--mob);
+}
+
+.CarApp_switchRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--s-sk-1);
+}
+
+.CarApp_swIcon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: var(--s-sk-2);
+}
+
+.CarApp_switch {
+  position: relative;
+  margin-left: auto;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--s-sk-2);
+}
+
+.CarApp_switch i {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--s-ink-3);
+}
+
+.CarApp_switch.CarApp_on {
+  background: color-mix(in srgb, var(--mob) 45%, var(--s-bg));
+}
+
+.CarApp_switch.CarApp_on i {
+  left: auto;
+  right: 3px;
+  background: var(--s-ink);
+}
+
+.CarApp_map {
+  border-radius: var(--r-inner);
+  overflow: hidden;
+  background: var(--s-sk-1);
+}
+
+.CarApp_map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.CarApp_send {
+  display: block;
+  margin-top: auto;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--mob);
+}
+
+.CarApp_cal {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.CarApp_slot {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--s-sk-1);
+}
+
+.CarApp_lesson {
+  width: 100%;
+  max-width: 280px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.CarApp_lessonTitle {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.CarApp_steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.CarApp_steps li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--r-inner);
+  border: 1px solid color-mix(in srgb, var(--mob) 40%, transparent);
+  background: color-mix(in srgb, var(--mob) 8%, var(--card-bg));
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+  transition:
+    background-color var(--d-state) var(--ease-state),
+    border-color var(--d-state) var(--ease-state),
+    color var(--d-state) var(--ease-state);
+}
+
+.CarApp_steps li[data-on="false"] {
+  border-color: var(--card-border);
+  background: var(--card-bg);
+  color: var(--ink-3);
+}
+
+.CarApp_num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--mob);
+  color: #0b1220;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.CarApp_steps li[data-on="false"] .CarApp_num {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink-3);
+}
+
+@media (min-width: 768px) {
+  .CarApp_wrap {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-6);
+  }
+}
+
+/* ── 스테이지: 폰은 왼쪽 위, 카드는 오른쪽(아래 가운데 차량 화살표가 보이게) ── */
+html[data-scrub="on"] .CarApp_wrap.CarApp_wrap {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--s-5);
+  padding-left: clamp(8px, 6%, 64px);
+  bottom: calc(100cqh - var(--oy) - 700 * var(--u));
+}
+
+html[data-scrub="on"] .CarApp_scr {
+  visibility: visible;
+}
+
+html[data-scrub="on"] .CarApp_lesson {
+  align-self: center;
+  max-width: 250px;
+}
+
+html[data-scrub="on"] .CarApp_phone.CarApp_phone {
+  width: min(240px, (var(--oy) + 700 * var(--u) - var(--artT) - 44px) / 2.17);
+}

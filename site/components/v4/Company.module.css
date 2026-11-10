@@ -1,0 +1,145 @@
+.hero {
+  padding-top: calc(var(--header-h) + 36px);
+  padding-bottom: 56px;
+  overflow: clip;
+}
+
+.grid {
+  display: grid;
+  gap: 32px;
+  align-items: center;
+}
+
+.h1 {
+  margin: 20px 0 24px;
+  font-size: var(--fs-h1);
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+
+/* 제목 줄: 정지 상태는 평범한 블록 두 줄. 모션 허용이면 styles/stages.css 가 줄 가림막(overflow + translateY)으로 올린다 */
+.line,
+.lineIn {
+  display: block;
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--r-btn);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--d-state) var(--ease-state);
+}
+
+.fig {
+  width: min(100%, 320px);
+  margin-inline: auto;
+}
+
+.fig figcaption {
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* 세 사업 + AI · A-Flow 바로 가기 네 칸(#509): 칸 위 분야 색 줄, 칸 전체가 링크 */
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+  margin: 40px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  min-height: 44px;
+  padding: 18px 0 20px;
+  border-top: 2px solid var(--c, var(--rule));
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.fieldName {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.factNum {
+  margin-top: 4px;
+  font-size: 2rem;
+}
+
+.factLabel {
+  margin-top: 6px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.fieldsNote {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ghost:hover {
+    border-color: var(--fix-ink);
+  }
+
+  .field:hover .fieldName {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-top: calc(var(--header-h) + 56px);
+    padding-bottom: 80px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 32px;
+  }
+
+  .fig {
+    width: min(100%, 440px);
+    margin-right: 0;
+  }
+
+  .fields {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 24px;
+    margin-top: 72px;
+  }
+
+  .factNum {
+    font-size: 2.5rem;
+  }
+}
+
+.nowrap {
+  white-space: nowrap;
+}

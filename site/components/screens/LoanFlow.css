@@ -1,0 +1,267 @@
+/* 4.3 대출 흐름: 갈래 도판 + 폰 도식. 흐름(≥768 가로, <768 세로), 스테이지(6~12열: 갈래 왼쪽, 폰 오른쪽) */
+
+.LoanFlow_loan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-5);
+}
+
+.LoanFlow_branches {
+  width: 100%;
+  max-width: 420px;
+}
+
+.LoanFlow_live {
+  display: none;
+}
+
+.LoanFlow_hplate {
+  display: block;
+  width: 100%;
+  max-width: 330px;
+  height: auto;
+  margin-inline: auto;
+}
+
+.LoanFlow_svgLabel {
+  font-size: 15px;
+  font-weight: 600;
+  fill: var(--ink-2);
+}
+
+.LoanFlow_svgChip {
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--ink);
+}
+
+.LoanFlow_phoneCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.LoanFlow_now {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .LoanFlow_loan {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-4);
+  }
+
+  .LoanFlow_branches {
+    flex: 1;
+    max-width: 360px;
+  }
+
+  .LoanFlow_hplate {
+    max-width: none;
+  }
+}
+
+/* ── 폰 화면(스켈레톤) ── */
+.LoanFlow_screens {
+  position: absolute;
+  inset: 0;
+}
+
+.LoanFlow_scr {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 6px 4px;
+  background: var(--s-bg);
+}
+
+/* 흐름·감소: ② 화면으로 정지 */
+.LoanFlow_scr:nth-child(1),
+.LoanFlow_scr:nth-child(3) {
+  visibility: hidden;
+}
+
+.LoanFlow_scrTitle {
+  margin: 2px 0 6px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--s-ink);
+}
+
+.LoanFlow_prod {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--r-chip);
+  background: var(--s-sk-1);
+}
+
+.LoanFlow_accent {
+  box-shadow: inset 3px 0 0 var(--fin);
+}
+
+.LoanFlow_prod::before {
+  content: "";
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--s-sk-2);
+}
+
+.LoanFlow_prodLines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.LoanFlow_choices {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.LoanFlow_choices span {
+  flex: 1;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--s-sk-1);
+  border: 1px solid var(--s-sk-2);
+}
+
+.LoanFlow_choices .LoanFlow_choiceOn {
+  background: color-mix(in srgb, var(--fin) 22%, var(--s-bg));
+  border-color: var(--fin);
+}
+
+.LoanFlow_result {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  padding: 12px 10px;
+  border-radius: var(--r-inner);
+  background: var(--s-sk-1);
+}
+
+.LoanFlow_resultBar {
+  flex: none;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--fin);
+}
+
+.LoanFlow_steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2px 8px 10px;
+  position: relative;
+}
+
+.LoanFlow_steps::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 50%;
+  height: 1.5px;
+  background: var(--s-sk-2);
+}
+
+.LoanFlow_steps span {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--s-bg);
+  border: 1.5px solid var(--s-sk-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--s-ink-3);
+}
+
+.LoanFlow_steps .LoanFlow_stepOn {
+  border-color: var(--fin);
+  color: var(--s-ink);
+}
+
+.LoanFlow_field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.LoanFlow_input {
+  display: block;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--s-sk-1);
+  border: 1px solid var(--s-sk-2);
+}
+
+.LoanFlow_submit {
+  display: block;
+  margin-top: auto;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--fin);
+}
+
+/* ── 스테이지 ── */
+html[data-scrub="on"] .LoanFlow_loan {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+html[data-scrub="on"] .LoanFlow_branches {
+  flex: 1;
+  max-width: none;
+  margin-right: -16px;
+}
+
+html[data-scrub="on"] .LoanFlow_live {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 60svh;
+  overflow: visible;
+}
+
+html[data-scrub="on"] .LoanFlow_hplate {
+  display: none;
+}
+
+html[data-scrub="on"] .LoanFlow_scr {
+  visibility: visible;
+}
+
+html[data-scrub="on"] .LoanFlow_now {
+  display: block;
+  position: relative;
+  height: 1.5em;
+  width: 100%;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+  text-align: center;
+}
+
+html[data-scrub="on"] .LoanFlow_now span {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}

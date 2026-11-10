@@ -1,0 +1,449 @@
+/* 3장 연혁. 흐름 모드: 세로 트래버스(2012 부터 세 줄 평행 레일, 분야 색) + 갈래별 건수 막대.
+   스테이지 모드: 가로 트랙(460vw), 현재 역 카드, 갈래 머리 건수. */
+
+.title {
+  max-width: 34em;
+}
+
+.countsCap {
+  opacity: 0;
+}
+
+/* ── 세로 트래버스(흐름) ── */
+.vertical {
+  position: relative;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+  margin-top: var(--s-5);
+}
+
+.vStation {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 64px;
+  min-height: 64px;
+}
+
+/* 레일: 이 역에서 다음 역까지. 2012 부터는 세 줄(위 디지털금융, 가운데 LBS·측위, 아래 IT서비스) */
+.vStation:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 23px;
+  top: 14px;
+  width: 2px;
+  height: calc(100% + var(--s-6));
+  background: var(--fix);
+  transform-origin: top;
+}
+
+.vStation[data-branch="3"]:not(:last-child)::before {
+  background: var(--lbs);
+}
+
+.vStation[data-branch="3"]:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 14px;
+  width: 26px;
+  height: calc(100% + var(--s-6));
+  background:
+    linear-gradient(var(--fin), var(--fin)) left / 2px 100% no-repeat,
+    linear-gradient(var(--mob), var(--mob)) right / 2px 100% no-repeat;
+}
+
+.vDot {
+  position: absolute;
+  left: 18px;
+  top: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--fix);
+  z-index: 1;
+}
+
+.vStation[data-branch="3"] .vDot {
+  background: var(--lbs);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .vStation:not(:last-child)::before {
+      animation: rail-fill linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 50%;
+    }
+  }
+}
+
+@keyframes rail-fill {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.year {
+  font-family: var(--font-display);
+  font-size: var(--fs-year);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.kind {
+  font-size: var(--fs-meta);
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.name {
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: 22em;
+}
+
+.no {
+  font-size: var(--fs-meta);
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+/* 갈래별 건수(흐름, 연출 ④ 막대 차오름) */
+.flowCounts {
+  margin-top: var(--s-7);
+  max-width: 40rem;
+}
+
+.flowCountsTitle {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: var(--s-3);
+}
+
+.flowCounts ul {
+  display: grid;
+  gap: var(--s-3);
+  margin-bottom: var(--s-3);
+}
+
+.flowCounts li {
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr) 3em;
+  align-items: center;
+  column-gap: var(--s-3);
+  font-size: var(--fs-small);
+}
+
+.fcName {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.fcBar {
+  display: block;
+  height: 12px;
+}
+
+.fcBar > span {
+  display: block;
+  height: 100%;
+  width: calc(var(--w) * 100%);
+  border-radius: 2px;
+  background: var(--c);
+}
+
+.fcN {
+  font-weight: 700;
+  color: var(--ink);
+  text-align: right;
+}
+
+/* ── 가로 트랙(스테이지) ── */
+.track {
+  position: absolute;
+  left: var(--ox);
+  top: var(--oy);
+  width: calc(var(--tw) * var(--u));
+  height: calc(900 * var(--u));
+  will-change: transform;
+}
+
+.trackSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+}
+
+/* 측점 왼쪽 창: 그려진 경로는 이 창 안에서만 보인다 */
+.window {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--ox) + 480 * var(--u));
+  overflow: hidden;
+}
+
+/* 트랙 안의 라벨은 트랙 원점 기준(이미 --ox/--oy 만큼 옮겨져 있다) */
+.labels,
+.counts {
+  position: absolute;
+  inset: 0;
+  --ox: 0px;
+  --oy: 0px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 12em;
+  max-width: 18em;
+  transform: translateX(-12px);
+}
+
+.label[data-pos="above"] {
+  transform: translate(-12px, -100%);
+}
+
+/* 3.4 수상 표지: 2025 세로 표지선 오른쪽 12px, 카드 톤 바탕판(선이 글자를 지나지 않게) */
+.label[data-pos="award"] {
+  transform: translate(12px, -100%);
+  padding: 8px 12px;
+  border-radius: var(--r-inner);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.label .year {
+  white-space: nowrap;
+  font-size: min(var(--t-year-xl), 8.5svh);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: var(--s-2);
+}
+
+.label .name,
+.label .kind,
+.label .year,
+.label .no {
+  transition:
+    color var(--d-state) var(--ease-state),
+    opacity var(--d-state) var(--ease-state);
+}
+
+.label[data-passed="false"] .year,
+.label[data-passed="false"] .name {
+  color: var(--ink-3);
+}
+
+.label[data-passed="false"] .no {
+  opacity: 0;
+}
+
+.branchLabels span {
+  transform: translateY(-50%);
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+  padding: 0 4px;
+  background: var(--paper);
+}
+
+.branchLabels {
+  opacity: 0;
+}
+
+/* 3.4 갈래 머리 건수 */
+.count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(-50%);
+  padding: 4px 10px;
+  border-radius: var(--r-chip);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--ink);
+  opacity: 0;
+}
+
+.count::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--c);
+}
+
+.count b {
+  color: var(--c);
+  font-weight: 800;
+}
+
+/* 현재 역 카드: 왼쪽 아래 계기판 자리(제목·갈래와 겹치지 않게), 높이 고정(글자가 바뀌어도 상자가 움직이지 않음) */
+.current {
+  position: absolute;
+  left: var(--cl);
+  width: 19em;
+  height: 9.25em;
+  bottom: var(--s-7);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 12px 18px;
+  overflow: hidden;
+}
+
+.current::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  width: 3px;
+  height: 22px;
+  border-radius: 0 2px 2px 0;
+  background: var(--fix);
+}
+
+.cKind {
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+/* 줄 자리를 늘 비워 둔다(글자가 바뀌어도 줄이 움직이지 않게, CLS 0) */
+.cKind,
+.cNo {
+  min-height: 1.5em;
+}
+
+.cName {
+  min-height: 3.1em;
+}
+
+.cYear {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.cName {
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.cNo {
+  font-size: var(--fs-meta);
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+/* ── 연도별 대표 사업(피드백 4차 3). 한 DOM: 흐름 = 세로 목록, 스테이지 = 갈래 위 카드 ── */
+.projWrap {
+  margin-top: var(--s-7);
+  max-width: 44rem;
+}
+
+.projects {
+  display: grid;
+  gap: 6px;
+  margin-top: var(--s-3);
+}
+
+.projects li {
+  --c: var(--lbs);
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr);
+  column-gap: var(--s-3);
+  align-items: baseline;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.projects li::before {
+  content: attr(data-y);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--c);
+}
+
+.projects li[data-f="fin"] {
+  --c: var(--fin);
+}
+
+.projects li[data-f="mob"] {
+  --c: var(--mob);
+}
+
+.projects li[data-f="etc"] {
+  --c: var(--etc);
+}
+
+/* 스테이지: 트랙과 함께 흐르는 카드(갈래 선 위에 가운데 맞춤, 층 분리 그림자, 연출 모듈이 원근 회전·투명도) */
+:global(html[data-scrub="on"]) .projWrap {
+  display: contents;
+}
+
+:global(html[data-scrub="on"]) .projects {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  display: block;
+  will-change: transform;
+}
+
+:global(html[data-scrub="on"]) .projects li {
+  position: absolute;
+  left: calc(var(--ox) + var(--x) * var(--u));
+  top: calc(var(--oy) + var(--ly) * var(--u));
+  display: block;
+  width: min(232px, calc(234 * var(--u)));
+  padding: 6px 10px 7px 12px;
+  font-size: 0.75rem;
+  line-height: 1.38;
+  border-radius: 10px;
+  background: linear-gradient(var(--card-bg), var(--card-bg)) var(--paper);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--c);
+  box-shadow: 0 10px 18px -12px rgba(0, 0, 0, 0.55), 0 2px 0 color-mix(in srgb, var(--c) 18%, transparent);
+  transform: translateY(-50%);
+  transform-origin: 0% 50%;
+  opacity: 0;
+}
+
+:global(html[data-scrub="on"]) .projects li::before {
+  display: block;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  margin-bottom: 1px;
+}

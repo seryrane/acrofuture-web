@@ -1,0 +1,162 @@
+/* 문의: --sunk 전폭 블록. ≥1024 왼쪽 1~9열 글·메일·정보, 10~12열 목적지 도면 */
+
+.contact {
+  position: relative;
+  background-color: var(--paper);
+  border-top: 1px solid var(--rule);
+}
+
+.main {
+  grid-column: 1 / -1;
+}
+
+.body {
+  margin-top: var(--s-5);
+  max-width: 36em;
+  color: var(--ink-2);
+}
+
+.mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  max-width: 100%;
+  min-height: 44px;
+  padding-block: var(--s-2);
+  margin-top: var(--s-6);
+  font-size: var(--fs-mail);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  text-decoration-color: var(--fix-ink);
+  overflow-wrap: anywhere;
+  color: var(--fix-ink);
+  transition:
+    text-decoration-thickness var(--d-state) var(--ease-state),
+    color var(--d-state) var(--ease-state);
+}
+
+.mail span {
+  min-width: 0;
+}
+
+.mailIcon {
+  width: 0.7em;
+  height: 0.7em;
+  color: var(--fix-ink);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mail:hover {
+    text-decoration-thickness: 2px;
+    color: var(--fix-ink);
+  }
+}
+
+/* 목적지 도면: 모바일은 가로 전폭, 높이 160px */
+.arrival {
+  grid-column: 1 / -1;
+  margin-top: var(--s-7);
+  height: 160px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.arrivalSvg {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  contain: paint;
+}
+
+.arrivalRing {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.info {
+  grid-column: 1 / -1;
+  margin-top: var(--s-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  padding: 20px;
+}
+
+.infoCell dd {
+  margin-top: var(--s-1);
+  color: var(--ink);
+}
+
+.portal {
+  grid-column: 1 / -1;
+  margin-top: var(--s-7);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-6);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.portal a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: 44px;
+}
+
+.tap {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.portalIcon {
+  color: var(--fix-ink);
+}
+
+@media (min-width: 768px) {
+  .info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: var(--grid-gap);
+    margin-top: var(--s-8);
+    padding: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main {
+    grid-column: 1 / span 9;
+    grid-row: 1;
+  }
+
+  .arrival {
+    grid-column: 10 / span 3;
+    grid-row: 1 / span 3;
+    align-self: start;
+    justify-self: end;
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    aspect-ratio: 1;
+    margin-top: 0;
+    border: 0;
+  }
+
+  .info {
+    grid-column: 1 / span 9;
+    grid-row: 2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .portal {
+    grid-column: 1 / span 9;
+    grid-row: 3;
+  }
+}

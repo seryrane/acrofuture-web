@@ -1,0 +1,368 @@
+/* 4~5장: 레일 평면과 도로 평면(CSS 3D). 평면 = 화면 1600×900 단위 상자, 도형은 위로 길게 이어진다. */
+
+.scene3d {
+  position: absolute;
+  inset: 0;
+  perspective: 1000px;
+  perspective-origin: 50% 50%;
+}
+
+.plane {
+  width: calc(1600 * var(--u));
+  height: calc(900 * var(--u));
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+
+/* 5장 시작 = 4장 끝(기울어진 평면) */
+.tilted {
+  transform: translate3d(0, 12svh, 0) rotateX(62deg) scale(1.3);
+}
+
+.world {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  /* 평면 안 요소는 평면 원점 기준 */
+  --ox: 0px;
+  --oy: 0px;
+}
+
+.surface {
+  position: absolute;
+  left: calc(var(--sx) * var(--u));
+  top: calc(var(--sy) * var(--u));
+  width: calc(var(--sw) * var(--u));
+  height: calc(var(--sh) * var(--u));
+  max-width: none;
+  overflow: visible;
+}
+
+/* 지평선 쪽을 바탕색으로 흐리게(평면 끝이 보이지 않게) */
+.haze {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--n-bg) 0%, var(--n-bg) 8%, transparent 42%);
+  pointer-events: none;
+}
+
+/* 왼쪽 문구 열(1~5열) 뒤 가림막: 제목·본문 띠(위)와 사업 기록 띠(아래)만 가리고 가운데 띠는 비워
+   건물·지역 블록은 보이고, 깃발·격자선은 글자를 지나지 않는다. 도로 가운데 앞에서 끝난다 */
+.haze::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--n-bg) 0,
+    color-mix(in srgb, var(--n-bg) 94%, transparent) calc(var(--cl) + var(--c5) + 12px),
+    transparent calc(var(--cl) + var(--c5) + 64px)
+  );
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 38%, transparent 45%, transparent 76%, #000 81%);
+  mask-image: linear-gradient(to bottom, #000 0, #000 38%, transparent 45%, transparent 76%, #000 81%);
+}
+
+/* POI 깃발·관문·픽업 표지: 평면에 누운 상태에서 카메라를 향해 선다(뒷면 숨김). 위치는 여백으로 잡아 변환에는 회전만 */
+.gate,
+.pin {
+  transform-origin: 50% 100%;
+  backface-visibility: hidden;
+}
+
+.gate {
+  width: calc(var(--gw) * var(--u));
+  height: calc(var(--gh) * var(--u));
+  margin-left: calc(var(--gw) * var(--u) / -2);
+  margin-top: calc(var(--gh) * var(--u) * -1);
+}
+
+.pin {
+  width: calc(40 * var(--u));
+  height: calc(70 * var(--u));
+  margin-left: calc(-20 * var(--u));
+  margin-top: calc(-70 * var(--u));
+}
+
+/* 5.4 건물: 윗면(translateZ) + 앞면·옆면(아래 기준으로 서는 면) */
+/* ── 5.4 3D 건물(피드백 4차 5): 압출 상자. 윗면(밝음)·앞면(중간)·옆면(어두움) 명암과 창문 줄(배경 반복, 노드 0),
+   발 밑 대지 판(가상 요소)으로 도시 블록 느낌 ── */
+.bld {
+  --wall: color-mix(in srgb, var(--n-raised) 88%, var(--mob));
+  --win: color-mix(in srgb, var(--lbs) 26%, var(--n-bg));
+  width: calc(var(--bw) * var(--u));
+  height: calc(var(--bd) * var(--u));
+  transform-style: preserve-3d;
+}
+
+.bld::before {
+  content: "";
+  position: absolute;
+  inset: calc(-14 * var(--u));
+  border-radius: calc(6 * var(--u));
+  background: color-mix(in srgb, var(--n-raised) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mob) 22%, transparent);
+  /* 대지 판은 건물이 설 때만(연출 모듈이 --lot 0→1→0). 흐름·감소에서는 도판을 쓰지 않으므로 기본 0 */
+  opacity: var(--lot, 0);
+}
+
+.bTop,
+.bFront,
+.bSide {
+  position: absolute;
+  display: block;
+}
+
+.bTop {
+  inset: 0;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--mob) 36%, var(--n-bg)), color-mix(in srgb, var(--mob) 16%, var(--n-bg)));
+  border: 1.5px solid color-mix(in srgb, var(--mob) 78%, #fff);
+  box-shadow: inset 0 0 0 calc(7 * var(--u)) color-mix(in srgb, var(--mob) 12%, transparent);
+  transform: translateZ(calc(var(--bh) * var(--u)));
+}
+
+/* 창문: 위 겹 = 층 사이 벽 띠(창 줄만 비움), 아래 겹 = 기둥과 창 칸. 둘이 겹친 자리만 창이 된다. 맨 위 겹은 아래로 갈수록 어두워지는 음영 */
+.bFront {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--bh) * var(--u));
+  background:
+    linear-gradient(to bottom, transparent 30%, rgba(0, 0, 0, 0.28)),
+    repeating-linear-gradient(to bottom, var(--wall) 0 calc(7 * var(--u)), transparent calc(7 * var(--u)) calc(16 * var(--u)), var(--wall) calc(16 * var(--u)) calc(20 * var(--u))),
+    repeating-linear-gradient(90deg, var(--wall) 0 calc(8 * var(--u)), var(--win) calc(8 * var(--u)) calc(18 * var(--u))),
+    var(--wall);
+  border: 1.5px solid color-mix(in srgb, var(--mob) 45%, var(--ink-3));
+  transform-origin: 50% 100%;
+  transform: rotateX(-90deg);
+}
+
+.bSide {
+  --wall: color-mix(in srgb, var(--n-bg) 80%, var(--mob));
+  --win: color-mix(in srgb, var(--lbs) 14%, var(--n-bg));
+  top: 0;
+  bottom: 0;
+  width: calc(var(--bh) * var(--u));
+  background:
+    repeating-linear-gradient(90deg, var(--wall) 0 calc(7 * var(--u)), transparent calc(7 * var(--u)) calc(16 * var(--u)), var(--wall) calc(16 * var(--u)) calc(20 * var(--u))),
+    repeating-linear-gradient(to bottom, var(--wall) 0 calc(8 * var(--u)), var(--win) calc(8 * var(--u)) calc(18 * var(--u))),
+    var(--wall);
+  border: 1.5px solid color-mix(in srgb, var(--mob) 30%, var(--ink-3));
+}
+
+.bld[data-side="right"] .bSide {
+  left: 100%;
+  transform-origin: 0% 50%;
+  transform: rotateY(-90deg);
+}
+
+.bld[data-side="left"] .bSide {
+  right: 100%;
+  transform-origin: 100% 50%;
+  transform: rotateY(90deg);
+}
+
+/* 평면 밖 오버레이(px 좌표) */
+.over {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.overLabels span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  padding: 2px 8px;
+  border-radius: var(--r-chip);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--ink);
+}
+
+.bubble {
+  position: absolute;
+  left: max(calc(var(--ox) + 668 * var(--u)), calc(var(--cl) + var(--c5) + 16px));
+  top: calc(var(--oy) + 690 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  opacity: 0;
+}
+
+.bubbleCard {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 14px 14px 14px 4px;
+}
+
+.bubbleCard i {
+  display: block;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--mob);
+}
+
+/* 4.6 떠 있는 차량 기호(스테이지 전용) */
+.carFloat {
+  display: none;
+}
+
+:global(html[data-scrub="on"]) .carFloat {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: 48px;
+  height: 48px;
+  color: var(--fin);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.carFloatSvg {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
+/* 정지 도판 라벨(HTML, 12px 이상 유지) */
+.plateBox {
+  position: relative;
+}
+
+.plateLabel {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  font-size: var(--fs-screen-xs);
+  color: var(--ink);
+}
+
+.plateLabel.left {
+  transform: translate(0, -100%);
+}
+
+/* 문구 블록 안 목록 */
+.longList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.clientList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+}
+
+.clientList li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.clientList b {
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.clients {
+  margin-top: var(--s-6);
+}
+
+.techText {
+  margin-top: var(--s-5);
+}
+
+:global(html[data-scrub="on"]) .clients,
+:global(html[data-scrub="on"]) .techText {
+  margin-top: 0;
+}
+
+/* ── POI 입체 지도 마커(피드백 4차 4): 요소 하나 = 발 밑 그림자(바탕) + 핀 몸통(::before, 윗면 밝고 아래 어두운 명암·두께) + 아이콘(::after, 가면) ──
+   평면에 누운 상태에서 카메라를 향해 선다(연출 모듈이 rotateX). 종류 색은 분야 팔레트, 검수 전에는 회색으로 누른다 */
+.poi {
+  --kc: var(--mob);
+  --pc: color-mix(in srgb, var(--kc) 30%, var(--n-ink-3));
+  width: calc(46 * var(--u));
+  height: calc(60 * var(--u));
+  margin-left: calc(-23 * var(--u));
+  margin-top: calc(-60 * var(--u));
+  transform-origin: 50% 100%;
+  backface-visibility: hidden;
+  background: radial-gradient(ellipse 46% 8% at 50% 94%, rgba(0, 0, 0, 0.6), transparent 72%);
+}
+
+.poi[data-ok="true"] {
+  --pc: var(--kc);
+}
+
+.poi::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(2 * var(--u));
+  width: calc(36 * var(--u));
+  height: calc(36 * var(--u));
+  margin-left: calc(-18 * var(--u));
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--pc) 70%, #fff) 0%, var(--pc) 42%, color-mix(in srgb, var(--pc) 58%, #000) 100%);
+  box-shadow:
+    inset calc(-3 * var(--u)) calc(-3 * var(--u)) 0 rgba(0, 0, 0, 0.22),
+    calc(-2 * var(--u)) calc(4 * var(--u)) calc(8 * var(--u)) rgba(0, 0, 0, 0.45);
+}
+
+.poi::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(10 * var(--u));
+  width: calc(20 * var(--u));
+  height: calc(20 * var(--u));
+  margin-left: calc(-10 * var(--u));
+  background: #fff;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+}
+
+.poi[data-kind="ev"] {
+  --kc: var(--etc);
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13 2 5 13h6l-1 9 8-12h-6l1-8z' fill='%23000'/%3E%3C/svg%3E");
+}
+
+.poi[data-kind="fuel"] {
+  --kc: var(--fin);
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M7 8h4M14 9l3 3v6a1.5 1.5 0 0 0 3 0V9l-3-3'/%3E%3C/svg%3E");
+}
+
+.poi[data-kind="park"] {
+  --kc: var(--lbs);
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18V6h4.5a3.5 3.5 0 0 1 0 7H9'/%3E%3C/svg%3E");
+}
+
+.poi[data-kind="food"] {
+  --kc: var(--mob);
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3v7a2 2 0 0 0 4 0V3M9 12v9M17 3c-2 1-3 3-3 6v4h3M17 3v18'/%3E%3C/svg%3E");
+}

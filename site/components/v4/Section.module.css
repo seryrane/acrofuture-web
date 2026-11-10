@@ -1,0 +1,94 @@
+/* 4판 공통 절 틀: 절 여백, 라벨, 제목 묶음, 큰 숫자 */
+.sec {
+  position: relative;
+  padding-block: 64px;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+/* 글줄 상한(컨테이너를 1680 으로 넓힌 뒤, #507): 문단 한 줄 약 70자 이하. :where 라 특이도 0 — 클래스로 정한 max-width 가 이긴다 */
+:where(.sec) p {
+  max-width: 42em;
+}
+
+.sec + .sec {
+  border-top: 1px solid var(--rule);
+}
+
+@media (min-width: 768px) {
+  .sec {
+    padding-block: 88px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sec {
+    padding-block: 112px;
+  }
+}
+
+.head {
+  max-width: 46rem;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .head {
+    margin-bottom: 48px;
+  }
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fix-core);
+}
+
+.title {
+  margin-top: 14px;
+  font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+
+.em {
+  color: var(--fix-ink);
+}
+
+.lede {
+  margin-top: 14px;
+  max-width: 40em;
+  font-size: 1.0625rem;
+  color: var(--ink-2);
+}
+
+/* 큰 숫자(표시용 PJS): 숫자 + 작은 단위 */
+.num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.num small {
+  margin-left: 3px;
+  font-family: var(--font-sans);
+  font-size: 0.4em;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}

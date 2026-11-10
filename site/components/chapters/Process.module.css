@@ -1,0 +1,263 @@
+/* 7장 일하는 과정. 흐름: 세로 트래버스 5역 + 29개 점 묶음 + 대형 29(배율 1). 스테이지: 가로 트래버스, 단계명 크게. */
+
+.vertical {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.vStep {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding-left: 48px;
+}
+
+.vStep:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 17px;
+  top: 20px;
+  width: 2px;
+  height: calc(100% + var(--s-4));
+  background: var(--fix);
+}
+
+.vDot {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--fix);
+  z-index: 1;
+}
+
+.teamsTitle {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  line-height: 1.6;
+  padding-top: var(--s-3);
+}
+
+/* 사람 점 띠(흐름) */
+.peoplePlate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+  max-width: none;
+}
+
+.band {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.group {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--s-3);
+}
+
+.dots {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+  width: calc(var(--n) * 14px - 6px);
+  height: 8px;
+  background: radial-gradient(circle at 4px 4px, var(--ink) 3.6px, transparent 4.2px) 0 0 / 14px 8px repeat-x;
+}
+
+.tick {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.giantFlowWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.giantFlow {
+  display: block;
+  color: var(--ink);
+}
+
+.giantCap {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+/* 조직 도식: 위 줄(본부·연구소)이 아래 줄(4개 팀)을 받친다. 층 분리 그림자로 두 단 */
+.org {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: var(--s-2);
+  padding-left: 14px;
+}
+
+.org::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 1.5px;
+  background: var(--fix);
+  opacity: 0.7;
+}
+
+.org ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.org li {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.orgTop li {
+  font-weight: 800;
+  border-color: color-mix(in srgb, var(--fix) 55%, transparent);
+  box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.45), 0 1px 0 color-mix(in srgb, var(--fix) 30%, transparent) inset;
+}
+
+@media (min-width: 768px) {
+  .band {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  .group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-3);
+  }
+
+  .dots {
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .dot {
+    width: 14px;
+    height: 14px;
+  }
+
+  .tick {
+    position: relative;
+    align-self: stretch;
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--ink-3);
+  }
+}
+
+/* ── 스테이지 ── */
+/* 6.6 비교표 행 선이 접힌 한 줄(7.1 시작 선) */
+.foldLine {
+  position: absolute;
+  left: var(--cl);
+  width: calc(var(--artR) - var(--cl));
+  top: calc(var(--oy) + 660 * var(--u));
+  height: 1px;
+  background: var(--ink-3);
+  transform-origin: 50% 50%;
+}
+
+.stop {
+  fill: var(--paper);
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
+  transition:
+    fill var(--d-state) var(--ease-state),
+    stroke var(--d-state) var(--ease-state);
+}
+
+.stop[data-passed="true"] {
+  fill: var(--fix);
+  stroke: var(--fix);
+}
+
+.steps {
+  position: absolute;
+  inset: 0;
+}
+
+.step {
+  width: 0;
+  height: 0;
+}
+
+/* 현재 단계명은 트래버스 위 오른쪽에 크게(clip-path 로 아래에서 올라온다) */
+.stepBig {
+  position: fixed;
+  left: 50cqw;
+  top: calc(var(--oy) + 330 * var(--u));
+  transform: translateY(-100%);
+  font-size: var(--t-step);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  color: var(--ink);
+  clip-path: inset(100% 0 0 0);
+}
+
+/* 지난 단계는 역 아래 작은 라벨로 */
+.stepSmall {
+  position: absolute;
+  left: 0;
+  top: calc(22 * var(--u));
+  transform: translateX(-50%);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--ink-2);
+  opacity: 0;
+}
+
+.groupLabels span {
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.giant.giant {
+  clip-path: inset(100% 0 0 0);
+  /* 97% 는 도판 6~12열 가운데(글자 수가 늘어 29 보다 작게) */
+  left: calc(var(--artL) + var(--artW) / 2);
+  top: calc(var(--oy) + 430 * var(--u));
+  font-size: min(var(--t-giant), calc(var(--artW) * 0.41), 46cqh);
+}
+
+.teamsTitle {
+  margin-top: var(--s-4);
+}

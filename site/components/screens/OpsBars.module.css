@@ -1,0 +1,105 @@
+/* 7.2 운영 기간 막대(두께 12px, 분야 색, 진행 중은 열린 화살 머리) */
+
+.ops {
+  margin: 0;
+  width: 100%;
+  max-width: 640px;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: var(--fs-meta);
+  line-height: 1.4;
+}
+
+.name {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.period {
+  color: var(--ink-3);
+}
+
+.track {
+  position: relative;
+  display: block;
+  height: 12px;
+  background: linear-gradient(var(--grid-major), var(--grid-major)) 0 50% / 100% 1px no-repeat;
+}
+
+.bar {
+  position: absolute;
+  top: 0;
+  left: calc(var(--s) * 100%);
+  width: calc((var(--e) - var(--s)) * 100%);
+  height: 12px;
+  border-radius: 2px;
+  background: var(--c);
+}
+
+/* 진행 중: 막대 끝 열린 화살 머리(1.5px 선, 8px) */
+.bar[data-open="true"] {
+  border-radius: 2px 0 0 2px;
+}
+
+.bar[data-open="true"]::after {
+  content: "";
+  position: absolute;
+  right: -9px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid var(--c);
+  border-right: 1.5px solid var(--c);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.axis {
+  position: relative;
+  height: 22px;
+  margin-top: 10px;
+  border-top: 1px solid var(--ink-3);
+}
+
+.axis span {
+  position: absolute;
+  white-space: nowrap;
+  top: 6px;
+  left: calc(var(--s) * 100%);
+  transform: translateX(-50%);
+  font-size: var(--fs-meta);
+  line-height: 1;
+  color: var(--ink-3);
+}
+
+.axis span:first-child {
+  transform: none;
+}
+
+.axis span:last-child {
+  transform: translateX(-100%);
+}
+
+.cap {
+  margin-top: var(--s-3);
+}
+
+/* 스테이지: 6~12열, 운영 역(오른쪽 위로 물러난 트래버스) 아래 */
+:global(html[data-scrub="on"]) .ops.ops {
+  top: calc(var(--oy) + 330 * var(--u));
+  bottom: auto;
+  display: block;
+  max-width: none;
+}

@@ -1,0 +1,51 @@
+/* 솔루션 절 위치 · 이동 카드 상세(기능 · 받치는 특허 · 적용 사업 · 첫 적용). 전역 CSS: 클래스 맵을 첫 로드 JS 에 싣지 않으려고 모듈로 두지 않았다. */
+.Cards_feat {
+  margin-top: 12px;
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.Cards_feat li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.Cards_feat li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.Cards_facts {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  gap: 8px;
+}
+
+.Cards_facts div {
+  display: grid;
+  grid-template-columns: 5.5em minmax(0, 1fr);
+  gap: 8px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.Cards_facts dt {
+  color: var(--ink-3);
+}
+
+.Cards_facts dd {
+  color: var(--ink-2);
+}

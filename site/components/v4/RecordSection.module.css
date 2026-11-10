@@ -1,0 +1,357 @@
+.cases {
+  display: grid;
+  gap: 16px;
+}
+
+.case {
+  padding: 22px;
+  border-left: 3px solid var(--c);
+  min-width: 0;
+}
+
+.chipTone {
+  border-color: var(--c);
+}
+
+.case h3 {
+  margin: 10px 0 8px;
+  font-size: 1.1875rem;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
+.case p {
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+}
+
+.case ul {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.case li b {
+  display: block;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.proof {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.proof > section {
+  padding: 22px;
+  min-width: 0;
+}
+
+.h3 {
+  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.75rem);
+  font-weight: 750;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+.h4 {
+  margin: 20px 0 10px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+/* 분야 막대 = 펼침 단추(summary). 누르면 그 분야 사례 목록(#508) */
+.bars {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.fieldBox {
+  border-radius: var(--r-inner);
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr) 2.6em 14px;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 4px 6px;
+  font-size: 0.875rem;
+  border-radius: var(--r-inner);
+  cursor: pointer;
+  list-style: none;
+}
+
+.barRow::-webkit-details-marker {
+  display: none;
+}
+
+.barRow > span:first-child {
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 4px;
+}
+
+.fieldBox[open] > .barRow {
+  background: var(--sunk);
+}
+
+.chev {
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-right: 2px solid var(--ink-2);
+  border-bottom: 2px solid var(--ink-2);
+  transform: rotate(45deg);
+  transition: transform var(--d-state) var(--ease-state);
+}
+
+.fieldBox[open] .chev {
+  margin-top: 4px;
+  transform: rotate(-135deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .barRow:hover > span:first-child {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* 목록: 길면(LBS·측위 52건) 칸 안에서 스크롤. 키보드로도 스크롤되게 tabIndex 0 */
+.caseList {
+  display: grid;
+  gap: 2px;
+  max-height: 22rem;
+  margin: 6px 0 10px;
+  padding: 8px 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  list-style: none;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--c);
+  border-radius: var(--r-inner);
+}
+
+.caseList > li {
+  display: grid;
+  grid-template-columns: 3.2em minmax(0, 1fr);
+  gap: 8px;
+  padding: 4px 0;
+  color: var(--ink);
+}
+
+.caseList > li + li {
+  border-top: 1px solid var(--rule);
+}
+
+.caseList .tnum {
+  color: var(--ink-3);
+}
+
+.who {
+  color: var(--ink-2);
+}
+
+.on {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--fix-ink);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+}
+
+/* 사례 카드 · 재난망 카드 아래 링크 두 개 */
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin-top: 14px;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--fix-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.track {
+  display: block;
+  height: 12px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: rgba(127, 140, 170, 0.18);
+}
+
+.track i {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--c);
+  transform-origin: left center;
+}
+
+.v {
+  text-align: right;
+  font-size: 1.125rem;
+  color: var(--ink);
+}
+
+.cap {
+  margin-top: 14px;
+}
+
+.netBody {
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+}
+
+.patents {
+  display: grid;
+  gap: 4px;
+  margin-top: 14px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.patents li {
+  display: grid;
+  grid-template-columns: 4.6em minmax(0, 1fr);
+  gap: 8px;
+}
+
+.patents b {
+  color: var(--fix-ink);
+}
+
+.run {
+  margin-top: 16px;
+  padding: 22px;
+}
+
+.runList {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.runName {
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.runName span {
+  margin-left: 4px;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+.runTrack {
+  position: relative;
+  display: block;
+  height: 10px;
+  border-radius: 5px;
+  background: rgba(127, 140, 170, 0.18);
+  overflow: hidden;
+}
+
+.runTrack i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 5px;
+  background: var(--c);
+  transform-origin: left center;
+}
+
+.axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+@media (min-width: 1024px) {
+  .axis {
+    padding-left: calc(24rem + 20px);
+  }
+}
+
+.process {
+  margin-top: 40px;
+  max-width: 46rem;
+}
+
+.processBody {
+  margin-top: 10px;
+  color: var(--ink-2);
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 10px;
+}
+
+@media (min-width: 768px) {
+  .cases {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case {
+    padding: 26px;
+  }
+
+  .case li b {
+    display: inline;
+    margin-right: 8px;
+  }
+
+  .proof > section,
+  .run {
+    padding: 26px;
+  }
+
+  .barRow {
+    grid-template-columns: 7.5em minmax(0, 1fr) 3em 14px;
+    gap: 14px;
+    font-size: 0.9375rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .proof {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+
+  .runList > li {
+    display: grid;
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+    align-items: center;
+    gap: 20px;
+  }
+
+  .runName {
+    margin-bottom: 0;
+  }
+}

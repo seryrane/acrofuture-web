@@ -1,0 +1,28 @@
+.skip {
+  position: fixed;
+  top: var(--s-2);
+  left: var(--s-2);
+  z-index: 300;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s-4);
+  background: var(--action-bg);
+  color: var(--action-fg);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.skip:not(:focus) {
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip:focus-visible {
+  outline-offset: 4px;
+}

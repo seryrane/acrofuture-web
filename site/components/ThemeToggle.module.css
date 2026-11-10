@@ -1,0 +1,50 @@
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--r-btn);
+  color: var(--ink);
+  transition:
+    color var(--d-state) var(--ease-state),
+    background-color var(--d-state) var(--ease-state),
+    transform var(--d-press) var(--ease-out);
+}
+
+.toggle:active {
+  transform: scale(0.98);
+}
+
+.withText {
+  justify-content: flex-start;
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+/* deep 테마에서는 해 + "밝은 화면으로", 밝은 테마에서는 달 + "어두운 화면으로" */
+.whenDeep,
+.whenLight {
+  line-height: 0;
+}
+
+.whenDeep,
+.whenDeepText {
+  display: var(--show-when-deep) !important;
+}
+
+.whenLight,
+.whenLightText {
+  display: var(--show-when-light) !important;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .toggle:hover {
+    color: var(--fix-ink);
+  }
+}

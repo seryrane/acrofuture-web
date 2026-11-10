@@ -1,0 +1,410 @@
+/* 6장 솔루션. 흐름: 솔루션마다 문구(이름·한 줄·본문·근거 칸·받치는 사업·칩) + 화면 예시. 스테이지: 왼쪽 문구, 오른쪽 화면 예시, 아래 범례 */
+
+/* ── 6.1 타일 ── */
+.tilesWrap {
+  position: relative;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+  min-width: 0;
+}
+
+.tileGlyph {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--s-2);
+  color: var(--ink);
+}
+
+.tileGlyph svg {
+  width: 48px;
+  height: 48px;
+}
+
+.tileName {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.tileRole {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.tileEv {
+  margin-top: 2px;
+}
+
+.solFix {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ── 6.2~6.5 문구 ── */
+.name {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.6rem + 3vw, 3.25rem);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.lead {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.support ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--s-2);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--rule);
+}
+
+.support li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.support li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--tone);
+}
+
+.shot {
+  display: flex;
+  justify-content: center;
+}
+
+/* 범례(스테이지 전용, 낮거나 좁은 화면에서는 화면 예시와 겹치지 않게 뺀다) */
+@media (max-width: 1279px), (max-height: 860px) {
+  .legend.legend {
+    display: none;
+  }
+}
+
+.legend {
+  position: absolute;
+  right: calc(100cqw - var(--artR));
+  bottom: var(--s-5);
+  display: flex;
+  gap: var(--s-4);
+  padding: 8px 12px;
+  border-radius: var(--r-card);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  opacity: 0;
+}
+
+.legend span {
+  display: inline-flex;
+  color: var(--ink-3);
+  transition: color var(--d-state) var(--ease-state);
+}
+
+.legend span[data-on="true"] {
+  color: var(--ink);
+}
+
+.legend svg {
+  width: 32px;
+  height: 32px;
+}
+
+/* ── 6.6 표 ── */
+.tableWrap {
+  margin: 0;
+  position: relative;
+}
+
+.tags {
+  display: none;
+}
+
+.caption {
+  caption-side: top;
+  text-align: left;
+  padding-bottom: var(--s-3);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  vertical-align: middle;
+  padding: 10px 10px;
+  border-bottom: 1px solid var(--ink-3);
+  color: var(--ink-2);
+}
+
+.table thead th {
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--ink-3);
+  border-bottom-color: var(--rule);
+}
+
+.table tbody th {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.rowName {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.rowName::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: var(--tone);
+  order: 1;
+}
+
+.rowName > span {
+  order: 2;
+}
+
+.rowName > :first-child {
+  order: 0;
+  width: 96px;
+  height: 60px;
+}
+
+/* <768: 솔루션별 카드 4장(표 칸에 이름표) */
+@media (max-width: 767px) {
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .table,
+  .table tbody,
+  .table tr,
+  .table th,
+  .table td {
+    display: block;
+  }
+
+  .caption {
+    display: block;
+    width: auto;
+  }
+
+  .table tbody {
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  .table tr {
+    padding: 14px 16px;
+    border-radius: var(--r-card);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+  }
+
+  .table th,
+  .table td {
+    display: grid;
+    grid-template-columns: 5.5em minmax(0, 1fr);
+    gap: var(--s-3);
+    padding: 6px 0;
+    border-bottom: 0;
+  }
+
+  .table td::before,
+  .table tbody th::before {
+    content: attr(data-label);
+    font-size: var(--fs-meta);
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+
+  .table tbody th {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .table tbody th::before {
+    display: none;
+  }
+
+  .table td:empty {
+    display: none;
+  }
+}
+
+/* ── 스테이지 ── */
+:global(html[data-scrub="on"]) .tilesWrap.tilesWrap {
+  align-items: center;
+}
+
+:global(html[data-scrub="on"]) .tiles {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(100%, 640px);
+  gap: 16px;
+}
+
+:global(html[data-scrub="on"]) .solFix {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: -14px 0 0 -14px;
+}
+
+/* 솔루션 문구: 이름은 clip-path 로 교대(시작 상태 = 가려짐) */
+:global(html[data-scrub="on"]) .name {
+  font-size: var(--t-solution);
+  clip-path: inset(100% 0 0 0);
+}
+
+:global(html[data-scrub="on"]) .solText > * + * {
+  margin-top: 14px;
+}
+
+:global(html[data-scrub="on"]) .body {
+  font-size: var(--fs-small);
+  line-height: 1.65;
+}
+
+:global(html[data-scrub="on"]) .shot.shot {
+  align-items: center;
+}
+
+@media (max-height: 760px) {
+  :global(html[data-scrub="on"]) .support li:nth-child(n + 3) {
+    display: none;
+  }
+
+  :global(html[data-scrub="on"]) .features {
+    display: none;
+  }
+}
+
+@media (max-height: 640px) {
+  :global(html[data-scrub="on"]) .support {
+    display: none;
+  }
+}
+
+/* 6.6 표: 문구 아래 전폭(12열, 레일 자리 비움) */
+:global(html[data-scrub="on"]) .tableText.tableText {
+  bottom: auto;
+}
+
+:global(html[data-scrub="on"]) .tableWrap.tableWrap {
+  left: var(--cl);
+  width: calc(var(--artR) - var(--cl));
+  top: calc(var(--oy) + 390 * var(--u));
+  bottom: auto;
+  display: block;
+}
+
+:global(html[data-scrub="on"]) .tags {
+  display: flex;
+  gap: var(--s-3);
+  position: absolute;
+  left: calc(var(--artL) - var(--cl));
+  bottom: calc(100% + 18px);
+}
+
+:global(html[data-scrub="on"]) .tag {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  align-items: baseline;
+  max-width: 260px;
+  padding: 10px 12px;
+  border-radius: var(--r-inner);
+  font-size: var(--fs-meta);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+:global(html[data-scrub="on"]) .tag b {
+  color: var(--fix-ink);
+}
+
+:global(html[data-scrub="on"]) .tag > span {
+  color: var(--ink-3);
+}
+
+:global(html[data-scrub="on"]) .table th,
+:global(html[data-scrub="on"]) .table td {
+  padding: 8px 10px;
+}
+
+:global(html[data-scrub="on"]) .table td:nth-child(n + 3) {
+  white-space: nowrap;
+}
+
+@media (max-width: 1279px) {
+  :global(html[data-scrub="on"]) .rowName > :first-child {
+    width: 72px;
+    height: 45px;
+  }
+
+  :global(html[data-scrub="on"]) .table th,
+  :global(html[data-scrub="on"]) .table td {
+    padding: 6px 8px;
+    font-size: 0.875rem;
+  }
+}
+
+:global(html[data-scrub="on"]) .table tbody tr {
+  transform-origin: 50% 100%;
+}

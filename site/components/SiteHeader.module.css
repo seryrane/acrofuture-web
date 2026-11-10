@@ -1,0 +1,333 @@
+.sentinel {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  height: var(--header-h);
+  color: var(--ink);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color var(--d-state) var(--ease-state),
+    border-color var(--d-state) var(--ease-state),
+    color var(--d-state) var(--ease-state);
+}
+
+/* 스크롤 뒤: 지금 면의 바탕 92% 단색 + 1px 구분선(청사진 #111A33EB, 심야 #070C1AEB, 종이 #FFFFFFEB). 블러 없음 */
+.header[data-scrolled="true"] {
+  background: color-mix(in srgb, var(--header-bg) 92%, transparent);
+  border-bottom-color: var(--rule);
+}
+
+.header[data-open="true"] {
+  background: var(--header-bg);
+}
+
+/* 진행 측점은 헤더 아래 선이 보일 때만 */
+.progress {
+  opacity: 0;
+  transition: opacity var(--d-state) var(--ease-state);
+}
+
+.header[data-scrolled="true"] .progress {
+  opacity: 1;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+  height: 100%;
+}
+
+.barLead {
+  display: flex;
+  align-items: center;
+}
+
+/* 워드마크 19px(<768) / 20px(≥768), 글꼴 교체 중 폭 변화로 헤더가 밀리지 않게 최소 폭(DESIGN 4.1) */
+.wordmark {
+  min-height: 44px;
+  min-width: 103px;
+  font-size: 1.1875rem;
+}
+
+@media (min-width: 768px) {
+  .wordmark {
+    min-width: 108px;
+    font-size: 1.25rem;
+  }
+}
+
+.nav {
+  display: none;
+  flex: 1;
+}
+
+.navList {
+  display: flex;
+  gap: var(--s-5);
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--fs-small);
+  font-weight: 550;
+  color: var(--ink-2);
+  text-decoration: none;
+  text-underline-offset: 0.5em;
+  text-decoration-thickness: 1px;
+  white-space: nowrap;
+  transition: color var(--d-state) var(--ease-state);
+}
+
+/* 내비 밑줄(M9): 2px --fix 선이 왼쪽에서 자라 현재 절 · hover · 포커스에 머문다(transform scaleX 160ms) */
+.navLink {
+  position: relative;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9px;
+  height: 2px;
+  background: var(--fix);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 160ms var(--ease-out);
+}
+
+:global(:root[data-chapter="company"]) .navLink[data-nav="company"],
+:global(:root[data-chapter="business"]) .navLink[data-nav="business"],
+:global(:root[data-chapter="ai"]) .navLink[data-nav="ai"],
+:global(:root[data-chapter="solutions"]) .navLink[data-nav="solutions"],
+:global(:root[data-chapter="record"]) .navLink[data-nav="record"],
+:global(:root[data-chapter="contact"]) .navLink[data-nav="contact"] {
+  color: var(--ink);
+}
+
+:global(:root[data-chapter="company"]) .navLink[data-nav="company"]::after,
+:global(:root[data-chapter="business"]) .navLink[data-nav="business"]::after,
+:global(:root[data-chapter="ai"]) .navLink[data-nav="ai"]::after,
+:global(:root[data-chapter="solutions"]) .navLink[data-nav="solutions"]::after,
+:global(:root[data-chapter="record"]) .navLink[data-nav="record"]::after,
+:global(:root[data-chapter="contact"]) .navLink[data-nav="contact"]::after,
+.navLink:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-left: auto;
+}
+
+.portal {
+  display: none;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: 44px;
+  font-size: var(--fs-small);
+  font-weight: 550;
+  color: var(--ink-2);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--d-state) var(--ease-state);
+}
+
+.desktopOnly {
+  display: none;
+}
+
+.ctaWrap {
+  display: flex;
+  align-items: center;
+}
+
+/* <768: 짧은 주 버튼(글자 14px, 보이는 높이 40px, 터치 44px) — 검수 P1-3 */
+.cta {
+  position: relative;
+  min-height: 40px;
+  padding: 0 var(--s-3);
+  font-size: 0.875rem;
+}
+
+.cta::after {
+  content: "";
+  position: absolute;
+  inset: -2px 0;
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  color: var(--ink);
+  transition: transform var(--d-press) var(--ease-out);
+}
+
+.menuButton:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .navLink:hover,
+  .portal:hover {
+    color: var(--fix-ink);
+  }
+
+  .navLink:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+@media (min-width: 768px) {
+  .actions {
+    gap: var(--s-4);
+  }
+
+  .cta {
+    min-height: 44px;
+    padding: 0 var(--s-5);
+    font-size: var(--fs-body);
+  }
+}
+
+/* ≥1024: 한 줄 헤더, 메뉴 시트 없음 */
+@media (min-width: 1024px) {
+  .nav {
+    display: block;
+  }
+
+  .portal {
+    display: inline-flex;
+  }
+
+  .desktopOnly {
+    display: inline-flex;
+  }
+
+  .menuButton,
+  .sheet {
+    display: none;
+  }
+
+  .actions {
+    gap: var(--s-5);
+  }
+}
+
+/* 1024~1199: 내비 6개가 모두 들어가도록 간격만 좁힌다 */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .navList {
+    gap: var(--s-4);
+  }
+
+  .bar {
+    gap: var(--s-5);
+  }
+
+  .actions {
+    gap: var(--s-4);
+  }
+}
+
+/* 모바일 전체 화면 메뉴 시트 */
+.sheet {
+  position: fixed;
+  inset: var(--header-h) 0 0 0;
+  z-index: 200;
+  overflow-y: auto;
+  background: var(--raised);
+  opacity: 0;
+  transform: translateY(8px);
+  visibility: hidden;
+  transition:
+    opacity var(--d-state) var(--ease-out),
+    transform var(--d-state) var(--ease-out),
+    visibility 0s linear var(--d-state);
+}
+
+.sheet[data-open="true"] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity var(--d-menu) var(--ease-out),
+    transform var(--d-menu) var(--ease-out),
+    visibility 0s linear 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .sheet[data-open="true"] {
+    transform: none;
+  }
+}
+
+.sheetInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  padding-top: var(--s-5);
+  padding-bottom: var(--s-7);
+}
+
+.sheetNav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sheetLink {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+.sheetCta {
+  width: 100%;
+  min-height: 52px;
+}
+
+.sheetMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.sheetMetaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 44px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.sheetToggle {
+  min-height: 44px;
+}

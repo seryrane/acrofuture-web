@@ -1,0 +1,351 @@
+/* 1장 원점. 흐름 모드: 글 → 도판(모바일 40svh), ≥1024(모션 감소) 글 7열 · 도판 5열.
+   스테이지 모드: 글은 챕터 맨 위에서 일반 흐름으로 위로 빠지고, 도면은 고정 스테이지에 풀블리드. */
+
+.hero {
+  position: relative;
+  padding-top: calc(var(--header-h) + var(--s-6));
+}
+
+.title {
+  font-size: var(--fs-h1);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+
+.line {
+  display: block;
+}
+
+/* 둘째 줄 파랑 강조(그라데이션 아님): 청사진 #6F92FF, 종이 #2C53CC */
+.accent {
+  color: var(--fix-ink);
+}
+
+.titleBlock {
+  margin-top: var(--s-6);
+}
+
+.lead {
+  margin-top: var(--s-5);
+  max-width: 34em;
+  color: var(--ink-2);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+}
+
+.cta {
+  min-height: 52px;
+  min-width: 160px;
+  font-size: 1.0625rem;
+}
+
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--fix-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.24em;
+  transition: text-decoration-thickness var(--d-state) var(--ease-state);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .secondary:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+.heroPlate {
+  margin-top: var(--s-5);
+  margin-inline: calc(var(--gutter) * -1);
+  height: 40svh;
+  min-height: 260px;
+}
+
+.flow {
+  padding-top: var(--s-9);
+}
+
+@media (min-width: 480px) {
+  .actions {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--s-6);
+  }
+
+  .secondary {
+    justify-content: flex-start;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-top: calc(var(--header-h) + var(--s-8));
+  }
+
+  .heroPlate {
+    height: 48svh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .titleBlock {
+    margin-top: var(--s-7);
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: center;
+    min-height: 100svh;
+    padding-top: calc(var(--header-h) + var(--s-7));
+    padding-bottom: var(--s-7);
+  }
+
+  .heroText {
+    grid-column: 1 / span 7;
+  }
+
+  .heroPlate {
+    grid-column: 8 / span 5;
+    margin: 0;
+    height: min(70svh, 620px);
+  }
+}
+
+/* ── 스테이지 모드 ── */
+:global(html[data-scrub="on"]) .hero {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 3;
+  display: block;
+  min-height: 0;
+  padding-top: calc(var(--header-h) + var(--s-9));
+  padding-bottom: 0;
+}
+
+:global(html[data-scrub="on"]) .heroText {
+  max-width: calc((100% - 11 * var(--grid-gap)) / 12 * 8 + 7 * var(--grid-gap));
+}
+
+/* 표제란: 1~7열, 버튼 아래 48px */
+:global(html[data-scrub="on"]) .titleBlock {
+  margin-top: var(--s-7);
+}
+
+/* 1024~1279: 표제란 2×2(칸이 좁아 글자가 한 글자씩 꺾이지 않게) */
+@media (max-width: 1279px) {
+  :global(html[data-scrub="on"]) .titleBlock {
+    max-width: 34rem;
+  }
+
+  :global(html[data-scrub="on"]) .titleBlock :global(.titleblock) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 헤더 영역(위 64px)에는 어떤 선도 들어가지 않는다(검수 P2-6) */
+.art {
+  -webkit-mask-image: linear-gradient(to bottom, transparent var(--header-h), #000 var(--header-h));
+  mask-image: linear-gradient(to bottom, transparent var(--header-h), #000 var(--header-h));
+}
+
+/* 좌표 격자: 48px 보조선 + 240px 주선. HTML 층이라 줌(scale)이 합성 단계에서 끝난다 */
+.gridWrap {
+  position: absolute;
+  left: 34%;
+  right: -10%;
+  top: -10%;
+  bottom: -10%;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 34%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 34%);
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size:
+    240px 240px,
+    240px 240px,
+    48px 48px,
+    48px 48px;
+  background-position: center;
+}
+
+/* 도면 테두리: 위 A~F, 오른쪽 1~8, 칸마다 6px 눈금 */
+.border {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.borderTop {
+  position: absolute;
+  left: 50%;
+  right: 104px;
+  top: calc(var(--header-h) + 12px);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-top: 1px solid var(--rule);
+}
+
+.borderRight {
+  position: absolute;
+  right: 76px;
+  top: calc(var(--header-h) + 12px);
+  bottom: 24px;
+  display: grid;
+  grid-template-rows: repeat(8, 1fr);
+  border-left: 1px solid var(--rule);
+  width: 28px;
+}
+
+.borderTop span,
+.borderRight span {
+  position: relative;
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.borderTop span {
+  padding: 8px 0 0 8px;
+}
+
+.borderRight span {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
+
+.borderTop span::before,
+.borderRight span::before {
+  content: "";
+  position: absolute;
+  background: var(--ink-3);
+}
+
+.borderTop span::before {
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 6px;
+}
+
+.borderRight span::before {
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 1px;
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  transform: translateX(-100%);
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--paper);
+  font-size: var(--fs-meta);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.caption span:first-child {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* 로드 연출(1회, 모션 허용): 오차 원이 좁혀지고, 십자선이 뻗고, 측점이 찍힌다 */
+.ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.crossH,
+.crossV {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ring {
+    animation: ring-in var(--d-focal) var(--ease-out) both;
+  }
+
+  .crossH {
+    animation: cross-h 560ms var(--ease-out) both;
+  }
+
+  .crossV {
+    animation: cross-v 560ms var(--ease-out) both;
+  }
+
+  .fixIn {
+    animation: fix-in 180ms var(--ease-out) 480ms both;
+  }
+}
+
+@keyframes ring-in {
+  from {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cross-h {
+  from {
+    transform: scaleX(0.2);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes cross-v {
+  from {
+    transform: scaleY(0.2);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fix-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

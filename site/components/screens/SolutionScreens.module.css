@@ -1,0 +1,367 @@
+/* 솔루션 화면 예시 4종. 프레임 폭 560px 이상이면 두 칸(지도 왼쪽 + 옆 패널), 미만이면 쌓는다(컨테이너 쿼리, scale 금지) */
+
+.frame {
+  --t: var(--fin);
+}
+
+.map {
+  overflow: hidden;
+  padding: 0;
+}
+
+.map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mapLabel {
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--s-ink-2);
+  letter-spacing: 0.02em;
+}
+
+.devLabel {
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--s-ink);
+}
+
+.twoCol,
+.quad,
+.rentCol {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: var(--r-inner);
+  background: var(--s-panel);
+  border: 1px solid var(--s-rule);
+}
+
+.report .kpis {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* 숫자·라벨은 한 줄로(좁은 칸에서 글자 단위로 끊기지 않게) */
+.kpi > * {
+  white-space: nowrap;
+}
+
+.today .kpis .kpi,
+.report .kpis .kpi {
+  padding: 8px 10px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.list ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-screen-xs);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--s-ink);
+}
+
+.rowText :global(.scr-meta) {
+  display: block;
+  font-weight: 500;
+}
+
+/* 상태가 바뀌는 칸: 기본(서버 HTML) = 마지막 칩(최종 상태). 연출이 data-i 로 앞 상태를 보인다 */
+.chipSlot {
+  display: inline-flex;
+}
+
+/* 목록 줄 오른쪽 칩 칸은 폭을 고정해 상태가 바뀌어도 칸이 움직이지 않게(CLS 0) */
+.list .chipSlot {
+  flex: none;
+  justify-content: flex-end;
+  min-width: 5.75rem;
+}
+
+.chipSlot > :global(.sc) {
+  display: none;
+}
+
+.chipSlot:not([data-i]) > :global(.sc):last-child,
+.chipSlot[data-i="0"] > :global(.sc):nth-child(1),
+.chipSlot[data-i="1"] > :global(.sc):nth-child(2),
+.chipSlot[data-i="2"] > :global(.sc):nth-child(3) {
+  display: inline-flex;
+}
+
+.today,
+.bars,
+.campaign,
+.report,
+.gaugeBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.barRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 84px;
+}
+
+.barCol {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+}
+
+.barCol i {
+  display: block;
+  width: 100%;
+  max-width: 18px;
+  border-radius: 2px 2px 0 0;
+  background: var(--t);
+  transform-origin: 50% 100%;
+}
+
+.barCol em {
+  font-style: normal;
+  font-size: var(--fs-screen-xs);
+  line-height: 1;
+  color: var(--s-ink-3);
+}
+
+.hours {
+  display: block;
+  width: 100%;
+  height: 64px;
+  border-bottom: 1px solid var(--s-grid);
+}
+
+.stepsBar {
+  display: flex;
+  gap: 4px;
+  margin: -4px 0 12px;
+  padding: 3px;
+  border-radius: var(--r-inner);
+  background: var(--s-panel);
+  border: 1px solid var(--s-rule);
+}
+
+.stepsBar li {
+  flex: 1;
+  padding: 6px 4px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: var(--fs-screen-xs);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--s-ink);
+  white-space: nowrap;
+  transition:
+    color var(--d-state) var(--ease-state),
+    background-color var(--d-state) var(--ease-state);
+}
+
+.stepsBar li[data-on="false"] {
+  color: var(--s-ink-3);
+}
+
+.stepsBar li[data-on="now"] {
+  background: color-mix(in srgb, var(--t) 18%, var(--s-bg));
+}
+
+.campaign :global(.sk) {
+  display: block;
+}
+
+/* Smart Rental 대장 표 */
+.table {
+  padding: 6px 10px 10px;
+}
+
+.tr {
+  display: grid;
+  grid-template-columns: 5.2em minmax(0, 1fr) 5.4em;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  border-bottom: 1px solid var(--s-rule);
+}
+
+.tr:last-child {
+  border-bottom: 0;
+}
+
+.th {
+  min-height: 30px;
+  font-size: var(--fs-screen-xs);
+  font-weight: 600;
+  color: var(--s-ink-3);
+}
+
+.assetId {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-screen-xs);
+  font-weight: 700;
+  color: var(--s-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.rowFix {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--fix);
+}
+
+.rowFix::after {
+  content: "";
+  position: absolute;
+  inset: 3.5px;
+  border-radius: 50%;
+  background: var(--fix-core);
+}
+
+.gauge {
+  display: block;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--s-grid);
+  overflow: hidden;
+}
+
+.gauge i {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  background: var(--t);
+  transform-origin: left center;
+}
+
+/* 6.6 썸네일 */
+.thumb {
+  display: block;
+  width: 120px;
+  height: 75px;
+  flex: none;
+}
+
+.thumb svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 넓은 프레임: 두 칸 */
+@container (min-width: 560px) {
+  .twoCol {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .quad {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+
+  .rentCol {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .map {
+    align-self: start;
+  }
+}
+
+/* 좁은 프레임: 지도는 2:1 로 낮추고, 아래 패널은 두 칸으로 나눠 높이를 아낀다 */
+@container (max-width: 559px) {
+  .map svg {
+    aspect-ratio: 2 / 1;
+  }
+
+  .sideSplit {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .quad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quad > .map,
+  .quad > .list {
+    grid-column: 1 / -1;
+  }
+}
+
+/* 아주 좁은 프레임(390 폰 흐름 모드): 아래 패널도 한 줄에 하나 */
+@container (max-width: 440px) {
+  .sideSplit,
+  .quad {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 아주 좁은 프레임(4판 솔루션 카드 4장 한 줄, 약 300px): 대장 줄의 상태 칩이 날짜 칸을 덮지 않게 칸을 줄인다(#508) */
+@container (max-width: 320px) {
+  .tr {
+    grid-template-columns: 3.4em minmax(0, 1fr) 3.4em;
+    gap: 6px;
+  }
+}

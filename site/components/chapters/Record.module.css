@@ -1,0 +1,272 @@
+/* 8장 실적과 도착. 흐름: 103+ · 24+ 정지(배율 1) + 분야 막대(연출 ④), 이름·건수 줄바꿈 목록, 등록부 목록.
+   스테이지: 대형 숫자·분야 막대·마퀴·도착 경로. */
+
+.flowGiant {
+  max-width: none;
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em 0.9em;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.count {
+  margin-left: 0.3em;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+.flowRegistry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+/* 분야 막대(두께 12px, 네 토막) */
+.fbar {
+  width: 100%;
+  max-width: 640px;
+  margin-top: var(--s-5);
+}
+
+.fbarTrack {
+  display: flex;
+  gap: 2px;
+  height: 12px;
+}
+
+.seg {
+  display: block;
+  height: 100%;
+  background: var(--c);
+  border-radius: 2px;
+}
+
+.fbarLabels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 10px 0 8px;
+}
+
+.fbarLabels li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.fbarLabels li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--c);
+}
+
+.fbarLabels b {
+  color: var(--ink);
+}
+
+/* ── 스테이지 ── */
+.g103wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.g103,
+.g24 {
+  color: var(--ink);
+  pointer-events: none;
+}
+
+/* 103+ 는 제 크기에서 콘텐츠 영역(1열 ~ 레일 앞) 폭 안에 두께까지 들어오게(글자 폭 약 2.2em) */
+.g103 {
+  font-size: min(var(--t-giant), calc((var(--artR) - var(--cl)) / 2.55), 52cqh);
+}
+
+.g24 {
+  opacity: 0;
+}
+
+.fbarLive {
+  margin-top: 18px;
+  max-width: none;
+}
+
+.fbarLive .fbarLabels {
+  flex-wrap: nowrap;
+  gap: 2px;
+}
+
+.fbarLive .fbarLabels li {
+  flex-basis: 0;
+  min-width: 0;
+  overflow: visible;
+}
+
+.fbarLive .seg {
+  transform-origin: left center;
+}
+
+.fix8 {
+  position: absolute;
+  left: calc(var(--ox) + 800 * var(--u));
+  top: calc(var(--oy) + 470 * var(--u));
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--fix-core);
+  box-shadow:
+    0 0 0 7px var(--n-bg),
+    0 0 0 8.5px var(--fix);
+}
+
+.marquee {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.rowWrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--oy) + var(--y) * var(--u));
+}
+
+.row {
+  overflow: hidden;
+  width: 100%;
+}
+
+.rowTrack {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.rowList {
+  display: flex;
+  align-items: center;
+  flex: none;
+  font-size: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
+  line-height: 1.3;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  color: var(--n-ink);
+  white-space: nowrap;
+}
+
+/* 이름 사이 구분: 1.5px 짧은 세로선 */
+.rowList li {
+  display: flex;
+  align-items: baseline;
+}
+
+.rowList li::after {
+  content: "";
+  display: inline-block;
+  align-self: center;
+  width: 1.5px;
+  height: 0.7em;
+  margin-inline: 0.9em;
+  background: var(--n-road);
+}
+
+/* 건수는 가상 요소(노드 절약): 이름 뒤 작은 글자 */
+.rowList li::before {
+  content: attr(data-n);
+  order: 2;
+  margin-left: 0.3em;
+  font-size: 0.4em;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+
+.rowList li::after {
+  order: 3;
+}
+
+.rowCaption {
+  position: absolute;
+  left: var(--cl);
+  top: calc(var(--oy) + var(--y) * var(--u));
+  color: var(--n-ink-3);
+}
+
+.pause {
+  position: absolute;
+  right: calc(100cqw - var(--artR));
+  top: calc(var(--oy) + (var(--r1) - 60) * var(--u));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-btn);
+  color: var(--n-ink);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  pointer-events: auto;
+}
+
+.registry {
+  position: absolute;
+  left: var(--cl);
+  right: calc(100cqw - var(--artR));
+  bottom: var(--s-6);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-6);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--n-road);
+  font-size: var(--fs-small);
+  color: var(--n-ink-2);
+  opacity: 0;
+}
+
+.destLive {
+  opacity: 0;
+}
+
+.addressCopy {
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+/* 8.4 제목 사본: 문의 섹션 h2 와 같은 자리(섹션 위 여백 + 컨테이너 왼쪽) */
+.contactCopy {
+  position: absolute;
+  left: var(--cl);
+  top: var(--section-top);
+  width: calc(9 * var(--col) + 8 * var(--grid-gap));
+}
+
+:global(html[data-scrub="on"]) .clientsText.clientsText {
+  top: 38%;
+  bottom: auto;
+}

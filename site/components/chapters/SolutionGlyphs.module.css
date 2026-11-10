@@ -1,0 +1,23 @@
+.glyph {
+  width: 40px;
+  height: 40px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  overflow: visible;
+}
+
+.glyph path {
+  vector-effect: non-scaling-stroke;
+}
+
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.dot {
+  opacity: 1;
+}

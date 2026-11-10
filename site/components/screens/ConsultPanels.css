@@ -1,0 +1,205 @@
+/* 4.4 AI 고객센터 패널 3개. 흐름: 390 세로 쌓기, ≥768 가로 3칸. 스테이지: 6~12열 가로 3칸 + 토큰 */
+
+.ConsultPanels_wrap {
+  margin: 0;
+  width: 100%;
+  max-width: 760px;
+}
+
+.ConsultPanels_frame {
+  position: relative;
+}
+
+.ConsultPanels_row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-3);
+  padding-top: 44px;
+}
+
+.ConsultPanels_panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+  background: var(--s-bg);
+  border-color: var(--s-rule);
+}
+
+.ConsultPanels_title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--s-ink);
+}
+
+.ConsultPanels_tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ConsultPanels_tiles span {
+  display: grid;
+  place-items: center;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--s-sk-1);
+  border: 1px solid transparent;
+  transition:
+    background-color var(--d-state) var(--ease-state),
+    border-color var(--d-state) var(--ease-state);
+}
+
+.ConsultPanels_tiles span::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background: var(--s-sk-2);
+}
+
+.ConsultPanels_tiles .ConsultPanels_tileOn {
+  background: color-mix(in srgb, var(--fin) 20%, var(--s-bg));
+  border-color: var(--fin);
+}
+
+.ConsultPanels_tiles .ConsultPanels_tileOn::after {
+  background: var(--fin);
+}
+
+.ConsultPanels_tiles .ConsultPanels_tileOn[data-lit="false"] {
+  background: var(--s-sk-1);
+  border-color: transparent;
+}
+
+.ConsultPanels_tiles .ConsultPanels_tileOn[data-lit="false"]::after {
+  background: var(--s-sk-2);
+}
+
+.ConsultPanels_search {
+  position: relative;
+  display: block;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--s-sk-1);
+  border: 1px solid var(--s-sk-2);
+}
+
+.ConsultPanels_search i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--s-ink-3);
+}
+
+.ConsultPanels_hints {
+  display: flex;
+  gap: 6px;
+}
+
+.ConsultPanels_hints span {
+  flex: 1;
+  height: 20px;
+  border-radius: 8px;
+  background: var(--s-sk-1);
+}
+
+.ConsultPanels_answer {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: 12px 12px 12px 4px;
+  background: color-mix(in srgb, var(--fin) 14%, var(--s-bg));
+}
+
+.ConsultPanels_steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ConsultPanels_list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ConsultPanels_list span {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--s-sk-1);
+}
+
+.ConsultPanels_aoai {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--fin) 45%, transparent);
+}
+
+.ConsultPanels_token {
+  display: none;
+}
+
+.ConsultPanels_cap {
+  margin-top: var(--s-2);
+}
+
+@media (min-width: 768px) {
+  .ConsultPanels_row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* Azure OpenAI 칩은 ①과 ② 사이 위 */
+  .ConsultPanels_aoai {
+    left: calc((100% - 2 * var(--s-3)) / 3 + var(--s-3) / 2);
+  }
+}
+
+/* ── 스테이지 ── */
+html[data-scrub="on"] .ConsultPanels_wrap {
+  align-items: center;
+}
+
+html[data-scrub="on"] .ConsultPanels_frame {
+  width: 100%;
+}
+
+html[data-scrub="on"] .ConsultPanels_row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+html[data-scrub="on"] .ConsultPanels_aoai {
+  left: calc((100% - 2 * var(--s-3)) / 3 + var(--s-3) / 2);
+}
+
+html[data-scrub="on"] .ConsultPanels_token {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--fin);
+  filter: drop-shadow(0 0 8px rgba(91, 140, 255, 0.45));
+  opacity: 0;
+}
+
+html[data-scrub="on"] .ConsultPanels_wrap > figcaption {
+  align-self: flex-start;
+}
