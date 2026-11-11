@@ -27,11 +27,9 @@
     --l: 1;
   }
 
-  /* 위성 궤도 점: 장식 반복 1개(원을 천천히 돎) */
+  /* 정지 도식의 궤도 점: 모션 허용이면 흐름 층의 궤도 불꽃(합성 단계 회전)이 대신하므로 조립과 함께 사라진다(#510, SVG 회전 다시 그리기 0) */
   #company [data-k="orbit"] {
-    transform-box: view-box;
-    transform-origin: 50% 50%;
-    animation: orbit 16s linear 1.6s infinite;
+    animation: orbit-off 0.6s var(--ease-out) 1.6s both;
   }
 
   /* 숫자 4칸 차례로 떠오름(최종값 고정, 카운트업 없음) */
@@ -52,7 +50,11 @@
     --j: 3;
   }
 
-  /* 오차 원 수렴은 모든 폭에서(3판 · 4판 원칙에서 모바일도 켬). #509: 세 사업 측점의 오차 원 + 가운데 AI · A-Flow 원, 지연은 --rd */
+  /* ── 히어로 도식 조립(#510, 모든 폭) ──
+     0.0  세 사업 오차 원이 바깥에서 줄어들며 자리 잡음(ring-in, --rd)
+     0.6  가운데 원이 켜짐(core-on) · 0.75 사업 → 가운데 바퀴살이 가운데 쪽부터 그려짐(spoke-draw)
+     0.95 가운데 글(AI 도입 · A-Flow) · 1.25 가운데 → 결과 바퀴살 · 1.45 결과(화면 · API · DB)가 떠오름(out-pop). 끝 약 2.2초.
+     이후 반복: 빛 번짐 숨쉬기 · 흐름 층(점 · 고리 · 불꽃, components/v4/Company.module.css .fx). 모두 HTML 층 transform · opacity. 시차는 lib/hero/parallax. */
   [data-stage="hero"] [data-k="ring"] {
     transform-box: fill-box;
     transform-origin: center;
@@ -60,9 +62,115 @@
     animation: ring-in 1.1s var(--ease-out) var(--rd, 0s) both;
   }
 
+  [data-stage="hero"] [data-k="core"] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: core-on 0.8s cubic-bezier(0.34, 1.4, 0.64, 1) var(--rd, 0.6s) both;
+  }
+
+  [data-stage="hero"] [data-k="spoke"] {
+    transform-box: fill-box;
+    transform-origin: 0 50%;
+    animation: spoke-draw 0.5s var(--ease-out) var(--rd, 0.8s) both;
+  }
+
+  [data-stage="hero"] [data-k="label"] {
+    animation: label-in 0.5s var(--ease-out) var(--rd, 0.5s) both;
+  }
+
+  [data-stage="hero"] [data-k="out"] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: out-pop 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) var(--rd, 1.45s) both;
+  }
+
   /* 이음선 · 가운데 글: 원이 모인 뒤 나타남 */
   [data-stage="hero"] [data-k="fix"] {
     animation: fix-in 0.4s var(--ease-out) var(--rd, 1.2s) both;
+  }
+
+  /* 빛 번짐: 조립과 함께 켜지고(glow-on) 그 뒤 느리게 숨 쉰다(glow-breathe). HTML 층이라 합성 단계에서 끝난다 */
+  [data-stage="hero"] [data-k="glow"] {
+    animation: glow-on 1.2s var(--ease-out) 0.4s both;
+  }
+
+  /* 숨쉬기는 ::before 에(한 요소에 transform 애니메이션 하나만 두어야 합성 단계에서 돈다). 주기 · 지연은 0.8초 격자(HeroFigure G) */
+  [data-stage="hero"] [data-k="glow"]::before {
+    animation: glow-breathe 4.8s ease-in-out 1.6s infinite alternate;
+  }
+
+}
+
+/* 히어로 스크롤 무대(C안 확정, 2026-11-10 대표): 스크롤하면 도식이 조금 커지며 떠오른다. ≥1024 · 모션 허용 · view() 지원에서만.
+   미지원 브라우저 · 모션 감소 · 1024 미만은 정지 B. 배율 · 이동은 제목 · 숫자 칸 글자와 어느 지점에서도 겹치지 않게 잰 값
+   (1.35 · 아래 22% 였던 시안은 1920 에서 API 알약 · 제목과 겹침. 1.16 · 2% 는 1920 · 1440 · 1280 · 1024 전 구간 글자와 29px 이상 띄움,
+   verify «히어로 스크롤 무대» 표본 5곳). scale · translate 개별 속성이라 시차(transform)와 겹치지 않는다 */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+    [data-stage="hero"] > [data-k="box"] {
+      animation: hero-zoom linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 80%;
+    }
+  }
+}
+
+@keyframes hero-zoom {
+  to {
+    scale: 1.16;
+    translate: 0 2%;
+  }
+}
+
+@keyframes orbit-off {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes core-on {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+@keyframes spoke-draw {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+}
+
+@keyframes label-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes out-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes glow-on {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes glow-breathe {
+  from {
+    opacity: 0.75;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.06);
   }
 }
 
@@ -76,12 +184,6 @@
   from {
     opacity: 0;
     transform: translateY(18px);
-  }
-}
-
-@keyframes orbit {
-  to {
-    transform: rotate(360deg);
   }
 }
 

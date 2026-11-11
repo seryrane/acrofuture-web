@@ -46,13 +46,354 @@
   transition: border-color var(--d-state) var(--ease-state);
 }
 
+/* 도식(#510): 상자 하나에 깊이 층 넷(빛 번짐 · 격자 · SVG · 캔버스). 상자 비율 = viewBox(600 × 560)라 로드 전후 높이가 같다(CLS 0) */
 .fig {
-  width: min(100%, 320px);
-  margin-inline: auto;
+  width: min(100%, 420px);
+  margin: 0 auto;
 }
 
+.figBox {
+  position: relative;
+  aspect-ratio: 600 / 560;
+  transform-origin: 50% 50%;
+}
+
+.figBox > svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* ── 흐름 층(#510): 모션 허용에서만 보인다. 좌표는 viewBox 단위를 상자 백분율로(가로 /6 %, 세로 /5.6 %, viewBox 600 × 560).
+   컨테이너 단위(cqw)는 쓰지 않는다: container-type 이 그리드 레이아웃을 여러 번 돌게 해 데스크톱 Lighthouse TBT 가 20 → 250~940ms 로 늘었다(#510 실측).
+   점 · 고리는 모두 transform · opacity CSS 애니메이션(합성 단계), 기본 opacity 0 이라 시작 전 · 멈춤에는 안 보인다 ── */
+
+.fx {
+  position: absolute;
+  inset: 0;
+  display: none;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease-out);
+}
+
+/* 시차(lib/hero/parallax, ≥1024 마우스): JS 는 0.1초마다 목표값만 쓰고, 따라붙는 움직임은 전환이 합성 단계에서 그린다 */
+.figBox[data-parallax] {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.figBox[data-parallax] > .mesh,
+.figBox[data-parallax] > svg,
+.figBox[data-parallax] > .fx {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.figBox[data-parallax] > .glow {
+  transition: translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 흐름 층은 로드 뒤 HeroMotion 이 data-run 을 세울 때 만들어진다(첫 그리기 프레임에 합성 층 수십 개가 한꺼번에 생기지 않게, #510 실측) */
+@media (prefers-reduced-motion: no-preference) {
+  .fx[data-run] {
+    display: block;
+  }
+}
+
+/* 화면 밖 · 오래 입력 없음(HeroMotion 이 data-run="0"): 흐름을 걷고 멈춘다 */
+.fx[data-run="0"] {
+  opacity: 0;
+}
+
+.fx[data-run="0"] *,
+.figBox:has(> .fx[data-run="0"]) > .glow::before {
+  animation-play-state: paused;
+}
+
+/* 바퀴살 · 궤도 묶음은 상자를 만들지 않는다(display: contents, 각도 변수만 물려줌). 상자 전체 크기의 회전 요소를 두면
+   투명한 큰 합성 층이 여러 장 생겨 모바일 Lighthouse 에서 켜질 때 0.4~0.9초 그리기 작업이 났다(#510 실측). 회전은 점 요소가 직접 한다. */
+.lane,
+.orbitFx {
+  display: contents;
+}
+
+/* 달리는 점: 요소의 왼쪽 끝 = 상자 가운데(CX, CY), 폭 = 바퀴살 길이. 가운데를 축으로 돌린 뒤 제 폭 기준으로 밀어 낸다.
+   점(::before)은 요소의 왼쪽 끝에 있어서, translateX(r0 / len × 100%) 이면 반지름 r0 자리에 온다 */
+.runIn,
+.runOut {
+  position: absolute;
+  top: calc(var(--cy) / 5.6 * 1%);
+  left: calc(var(--cx) / 6 * 1%);
+  width: calc(var(--len) / 6 * 1%);
+  height: 4px;
+  margin-top: -2px;
+  transform-origin: 0 50%;
+  --near: calc(var(--r0) * 100% / var(--len));
+  --far: calc(100% + var(--r0) * 100% / var(--len));
+  opacity: 0;
+}
+
+.runIn::before,
+.runOut::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c, var(--fix-core));
+  box-shadow:
+    0 0 6px var(--c, var(--fix-core)),
+    0 0 16px var(--c, var(--fix-core));
+}
+
+.runIn::after,
+.runOut::after {
+  content: "";
+  position: absolute;
+  top: 0.5px;
+  width: calc(4600% / var(--len)); /* 46 단위 */
+  height: 3px;
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+/* 들어오는 점: 꼬리는 바깥(사업) 쪽 */
+.runIn::after {
+  left: 4px;
+  background: linear-gradient(90deg, var(--c), transparent);
+}
+
+/* 주기 · 지연은 모두 0.8초 격자(HeroFigure 의 G). 바퀴 4.8초 */
+.runIn {
+  animation: run-in 4.8s linear var(--d) infinite;
+}
+
+/* 나가는 점(잎색): 꼬리는 가운데 쪽 */
+.runOut::after {
+  right: calc(100% + 4px);
+  background: linear-gradient(270deg, var(--fix-core), transparent);
+}
+
+.runOut {
+  animation: run-out 4.8s linear var(--d) infinite;
+}
+
+.ping,
+.flash,
+.ripple {
+  position: absolute;
+  border: 1.5px solid var(--c, var(--fix));
+  border-radius: 999px;
+  opacity: 0;
+}
+
+.ping {
+  left: calc((var(--x) - 28) / 6 * 1%);
+  top: calc((var(--y) - 28) / 5.6 * 1%);
+  width: calc(56 / 6 * 1%);
+  aspect-ratio: 1;
+  animation: ping 1.6s var(--ease-out) var(--d) infinite;
+}
+
+.flash {
+  --c: var(--fix-core);
+  left: calc((var(--x) - var(--w) / 2) / 6 * 1%);
+  top: calc((var(--y) - 16) / 5.6 * 1%);
+  width: calc(var(--w) / 6 * 1%);
+  aspect-ratio: var(--w) / 32;
+  animation: flash 2.4s var(--ease-out) var(--d) infinite;
+}
+
+.ripple {
+  left: calc((var(--cx) - 76) / 6 * 1%);
+  top: calc((var(--cy) - 76) / 5.6 * 1%);
+  width: calc(152 / 6 * 1%);
+  aspect-ratio: 1;
+  animation: ripple 4.8s linear var(--d) infinite;
+}
+
+/* 궤도 불꽃: 요소의 왼쪽 끝 = 상자 가운데, 폭 = 반지름, 점(::before)은 오른쪽 끝. 요소가 가운데를 축으로 돈다.
+   꼬리는 지나온 쪽(접선 = 요소의 세로 방향)으로 옅어지는 그림자 셋 */
+.spark {
+  --dir: 1;
+  position: absolute;
+  top: calc(var(--cy) / 5.6 * 1%);
+  left: calc(var(--cx) / 6 * 1%);
+  width: calc(var(--r) / 6 * 1%);
+  height: 5px;
+  margin-top: -2.5px;
+  transform-origin: 0 50%;
+  transform: rotate(var(--a0));
+  animation:
+    spin var(--t) linear 2.4s infinite,
+    spark-on 0.8s var(--ease-out) 2.4s both;
+}
+
+.orbitFx[data-rev] > .spark {
+  --dir: -1;
+  animation-name: spin-rev, spark-on;
+}
+
+.spark::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -2.5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow:
+    0 calc(var(--dir) * -6px) 0 -0.5px color-mix(in srgb, var(--c) 60%, transparent),
+    0 calc(var(--dir) * -12px) 0 -1px color-mix(in srgb, var(--c) 35%, transparent),
+    0 calc(var(--dir) * -18px) 0 -1.5px color-mix(in srgb, var(--c) 18%, transparent);
+}
+
+/* 폰(<768): 흐름 층을 끈다. 정지 도식 + 조립 연출 · 빛 번짐만 둔다(C안 확정 지시, 모바일 성능 추적 중단) */
+@media (max-width: 767.98px) {
+  .fx[data-run] {
+    display: none;
+  }
+}
+
+/* 들어오는 점: 바퀴의 0~50%(2.4초) 동안 바깥 → 가운데, 가운데 쪽으로 빨라진다. 나머지는 쉼(안 보임) */
+@keyframes run-in {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(var(--far));
+    animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.35);
+  }
+
+  6%,
+  44% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(var(--near));
+  }
+}
+
+/* 나가는 점: 바퀴의 0~1/3(1.6초) 동안 가운데 → 결과, 처음에 빠르고 닿을 때 느려진다 */
+@keyframes run-out {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(var(--near));
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1);
+  }
+
+  5%,
+  29% {
+    opacity: 1;
+  }
+
+  33.333%,
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(var(--far));
+  }
+}
+
+@keyframes ping {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+
+  55%,
+  100% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+
+  45%,
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(calc(var(--a0) + 360deg));
+  }
+}
+
+@keyframes spin-rev {
+  to {
+    transform: rotate(calc(var(--a0) - 360deg));
+  }
+}
+
+/* 불꽃 켜짐: 투명도만(회전 spin 과 겹치지 않게 transform 은 건드리지 않는다) */
+@keyframes spark-on {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* 빛 번짐: 가운데 뒤의 옅은 파랑 + 잎색 둥근 빛(정지 상태에도 있음) */
+/* 그림은 ::before 에: 요소(.glow)는 켜짐 · 시차 이동, ::before 는 숨쉬기. 한 요소에 transform 애니메이션이 둘이면 합성 실패(64)로
+   메인 스레드에서 돌며 매 프레임 메인 프레임을 만들어, 흐름 층 전체가 매 프레임 스타일 재계산을 했다(#510 실측) */
+.glow {
+  position: absolute;
+  inset: 4% 8%;
+  pointer-events: none;
+}
+
+.glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side at 50% 50%, rgba(91, 140, 255, 0.3), rgba(91, 140, 255, 0.08) 55%, transparent 100%);
+}
+
+/* 옅은 격자: 가운데에서 바깥으로 사라지는 측량 격자. 맨 위 층이 바탕색 원형 그라데이션으로 가장자리를 덮는다
+   (mask-image 는 데스크톱 Lighthouse 첫 프레임을 0.3~0.9초 막아 쓰지 않는다, #510 실측) */
+.mesh {
+  position: absolute;
+  inset: -6%;
+  background:
+    radial-gradient(closest-side at 50% 50%, transparent 30%, var(--paper) 100%),
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px) center / 32px 32px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px) center / 32px 32px;
+  pointer-events: none;
+}
+
+/* 설명 글은 격자 층(상자 밖으로 6% 넘침, 가장자리를 바탕색으로 덮음) 위에 와야 한다 */
 .fig figcaption {
-  margin-top: 6px;
+  position: relative;
+  margin-top: 10px;
   text-align: center;
 }
 
@@ -112,6 +453,12 @@
 }
 
 @media (min-width: 768px) {
+  .fig {
+    width: min(100%, 560px);
+  }
+}
+
+@media (min-width: 768px) {
   .hero {
     padding-top: calc(var(--header-h) + 56px);
     padding-bottom: 80px;
@@ -140,6 +487,38 @@
   }
 }
 
+/* 제목과 도식이 맞서게(#510): 왼쪽은 제목 · 부제가 필요한 폭만(두 줄 제목 유지), 남는 폭을 도식이 쓴다.
+   1920 에서 도식 760px(화면의 약 40%), 1440 약 600px(약 42%), 1280 약 480px */
+@media (min-width: 1280px) {
+  .grid {
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .fig {
+    width: min(100%, 760px);
+    margin: -24px -16px -24px auto;
+  }
+}
+
 .nowrap {
   white-space: nowrap;
+}
+
+/* 좁은 폭: 도식이 화면 폭에 맞춰 작아지므로(약 0.6배) 도식 안 글자를 키운다(분야 이름 · 가운데 글 약 15px, 결과 칸 약 11px) */
+@media (max-width: 767.98px) {
+  .figBox [data-k="label"] {
+    font-size: 27px;
+  }
+
+  .figBox [data-k="fix"] text {
+    font-size: 24px;
+  }
+
+  .figBox [data-k="out"] rect,
+  .figBox [data-k="out"] text {
+    transform-box: fill-box;
+    transform-origin: center;
+    scale: 1.25;
+  }
 }

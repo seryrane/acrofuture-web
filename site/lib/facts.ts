@@ -675,8 +675,9 @@ export const hero = {
   primary: "AI 도입 문의",
   secondary: "A-Flow 보기",
   // 도식: 세 사업(측점 + 오차 원) 가운데에 AI 도입 · A-Flow 층
-  figLabel: "위치 · 모빌리티 · 금융 세 사업을 가운데의 AI 도입과 A-Flow 가 잇는 도식",
-  figCaption: "세 사업 위에 AI 도입 · A-Flow (도식)",
+  // #510: 세 사업의 업무가 가운데 AI 도입 · A-Flow 로 모이고, A-Flow 가 스펙에서 화면 · API · DB 를 만든다(FACTS «A-Flow» 한 줄 «스펙 하나에서 화면 · API · DB 까지»)
+  figLabel: "위치 · 모빌리티 · 금융 세 사업의 업무가 가운데의 AI 도입과 A-Flow 로 모이고, A-Flow 가 화면 · API · DB 로 만들어 내는 도식",
+  figCaption: "세 사업의 업무 → AI 도입 · A-Flow → 화면 · API · DB (도식)",
   figCore: ["AI 도입", "A-Flow"],
   // 아래 칸 4개: 세 사업(사례 건수, 사업 패널로) + AI · A-Flow(솔루션 A-Flow 카드로). 3판 첫 화면 «사업 칸 링크» 를 되살림(R508 → #509)
   // 옛 숫자 줄(17년 · 103건 이상 · 등록 특허 2건 · 97%) 재검토는 docs/NUMBERS.md «#509» 절
